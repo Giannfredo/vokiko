@@ -4,6 +4,7 @@ import { renderBook } from './screens/book.js';
 import { renderUnit } from './screens/unit.js';
 import { renderPractice } from './screens/practice.js';
 import { renderHistory } from './screens/history.js';
+import { renderImport } from './screens/import.js';
 
 const app = document.getElementById('app');
 
@@ -15,6 +16,7 @@ const routes = [
   { pattern: /^#\/lektion\/(\w+)$/,  render: renderUnit },
   { pattern: /^#\/ueben\/(\w+)$/,    render: renderPractice },
   { pattern: /^#\/historie$/,        render: renderHistory },
+  { pattern: /^#\/foto\/(\w+)$/,     render: renderImport },
 ];
 
 async function router() {

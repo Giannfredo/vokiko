@@ -17,13 +17,16 @@ Spezifikation: https://claude.ai/artifact/Ft55XZMdSKqsB6rfLp3tw1
 
 ## Struktur
 - `index.html` – Einstieg, lädt `css/style.css` und `js/app.js`
-- `js/app.js` – Hash-Router (`#/start`, `#/regal`, `#/buch/:id`, `#/lektion/:id`, `#/ueben/:id`, `#/historie`)
+- `js/app.js` – Hash-Router (`#/start`, `#/regal`, `#/buch/:id`, `#/lektion/:id`, `#/ueben/:id`, `#/historie`, `#/foto/:id`)
 - `js/db.js` – Speichern/Laden (`books`, `units`, `vocab`, `sessions`, `answers`, `newId()`, `exportAll()`/`importAll()`)
 - `js/quiz.js` – Abfrage-Logik ohne HTML (Fragen bauen, Toleranzregeln `checkTyped()`, auswerten, Sterne, Wort-Status)
 - `js/history.js` – Statistik ohne HTML (Vergleich „letztes Mal“, Problemwörter, Datum/Dauer)
+- `js/ocr.js` – Foto vorbereiten (drehen, markierten Bereich ausschneiden und bis 2× vergrößern, Grün-Kanal als Graubild, max. 2000 px) und Texterkennung mit Tesseract.js 5.1.1 (`recognizeAll()`: ein Worker für alle Bereiche, erst bei Bedarf vom CDN geladen, Wörter mit Sicherheit < 40 verworfen)
+- `js/parser.js` – Wortpositionen → Wortpaare ohne HTML: Abschnitte bilden → 3 häufigste Spaltenanfänge → Spalten von oben nach unten abgleichen (`align()`, verträgt schräge/verzerrte Fotos) → Fortsetzungszeilen anhängen → säubern. Spaltenreihenfolge der Bücher: Fremdwort | Deutsch | Beispielsatz
 - `js/speech.js` – Aussprache per Web Speech API (`speak(text, SPRACHEN[x].stimme)`)
 - `js/utils.js` – `esc()` und `SPRACHEN` (Name, Flagge, Stimme, Akzent-Knöpfe)
 - `js/screens/practice.js` – Üben: Modus/Anzahl wählen → Abfrage → Korrekturseite (speichert Übung + Antworten)
+- `js/screens/import.js` – Foto-Import: Foto wählen → vorbereiten (drehen, Rahmen um Vokabelbereiche ziehen, mehrere möglich, Pointer-Events) → OCR + Parser je Bereich → Prüfansicht → Speichern (Doppelte werden übersprungen)
 - `js/screens/history.js` – Historie: Problemwörter, alle Übungen, Export/Import
 - `js/ui/dialog.js` – `confirmDialog()` (eigenes Popup)
 - `js/screens/*.js` – ein Modul pro Bildschirm, Signatur `async function renderX(app, ...params)`
@@ -34,6 +37,10 @@ Spezifikation: https://claude.ai/artifact/Ft55XZMdSKqsB6rfLp3tw1
 - Farben nur über die CSS-Variablen in `:root` (`--rost`, `--orange`, `--creme`, `--braun`, `--gruen`).
 - Tippflächen mindestens 48 px hoch.
 - IDs mit `newId()` (kein `crypto.randomUUID`, das braucht HTTPS).
+
+## Foto-Import testen
+- Beispielfotos liegen in `Photo_Examples/` (HEIC, nicht in Git – Schulbuchseiten sind urheberrechtlich geschützt).
+- Chrome kann HEIC nicht öffnen → in Safari testen oder als JPEG exportieren.
 
 ## Datenmodell (vocab)
 `{ id, unitId, fremd, deutsch, beispiel, status: 'neu'|'in Arbeit'|'sicher', richtigInFolge, fehlerGesamt, erstelltAm }`
@@ -51,7 +58,7 @@ Problemwort = `fehlerGesamt > 0` und nicht `sicher`. Vergleich „letztes Mal“
 - [x] 3 Auswahl-Modus „1 aus 3“ mit Korrekturseite am Ende
 - [x] 4 Schreib-Modi Fremd→DE und DE→Fremd mit Toleranz (Groß/Klein egal, eine Bedeutung reicht, fehlende Akzente = „fast richtig“), Aussprache per Web Speech API
 - [x] 5 Historie: Übungen speichern, „letztes Mal X Fehler, heute Y“, Problemwörter, Export/Import
-- [ ] 6 Foto-Import mit Tesseract.js + Prüfansicht
+- [x] 6 Foto-Import mit Tesseract.js + Bereiche markieren + Prüfansicht (läuft; Erkennungsqualität wird noch verbessert)
 - [ ] 7 Design: Kiko-Grafik, Sterne, Konfetti
 - [ ] 8 PWA (offline, Homescreen)
 - [ ] 9 Capacitor → iPhone/Android

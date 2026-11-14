@@ -28,7 +28,10 @@ export async function renderUnit(app, unitId) {
     <a class="back" href="#/buch/${book.id}">← ${esc(book.titel)}</a>
     <h1>${esc(unit.name)}</h1>
     <p>${words.length} Vokabeln</p>
-    ${words.length ? `<a class="btn" href="#/ueben/${unitId}">▶️ Üben</a>` : ''}
+    <div class="row">
+      ${words.length ? `<a class="btn" href="#/ueben/${unitId}">▶️ Üben</a>` : ''}
+      <a class="btn btn-secondary" href="#/foto/${unitId}">📷 Foto einlesen</a>
+    </div>
     ${words.length ? `<ul class="list">${rows}</ul>` : '<p class="empty">Noch keine Vokabeln. Leg unten die erste an!</p>'}
 
     <form class="form" id="vocab-form">
