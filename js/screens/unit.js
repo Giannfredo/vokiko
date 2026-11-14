@@ -26,6 +26,7 @@ export async function renderUnit(app, unitId) {
     <a class="back" href="#/buch/${book.id}">← ${esc(book.titel)}</a>
     <h1>${esc(unit.name)}</h1>
     <p>${words.length} Vokabeln</p>
+    ${words.length >= 3 ? `<a class="btn" href="#/ueben/${unitId}">▶️ Üben</a>` : ''}
     ${words.length ? `<ul class="list">${rows}</ul>` : '<p class="empty">Noch keine Vokabeln. Leg unten die erste an!</p>'}
 
     <form class="form" id="vocab-form">

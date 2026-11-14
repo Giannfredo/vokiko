@@ -149,3 +149,27 @@ input:focus, select:focus { outline: none; border-color: var(--orange); }
   from { transform: scale(.85); opacity: 0; }
   to   { transform: scale(1);   opacity: 1; }
 }
+/* ---------- Schritt 3: Üben (1 aus 3) und Korrekturseite ---------- */
+.choice-list { display: grid; gap: 12px; margin: 16px 0; }
+.btn-choice {
+  background: var(--karte);
+  color: var(--braun);
+  font-size: 20px;
+  text-align: center;
+  box-shadow: 0 4px 0 rgba(74, 44, 29, .2);
+}
+.btn-choice:hover { outline: 3px solid var(--orange); }
+
+.quiz-top { display: flex; justify-content: space-between; align-items: center; font-weight: 700; }
+.quiz-top .back { margin: 0; }
+.quiz-word { margin: 40px 0 8px; font-size: 36px; font-weight: 800; text-align: center; overflow-wrap: anywhere; }
+.quiz-hint { text-align: center; opacity: .7; margin-top: 0; }
+
+.stars { font-size: 48px; color: var(--orange); letter-spacing: 6px; }
+.stars .off { color: #EAD7C5; }
+.score { font-size: 22px; font-weight: 800; margin-top: 0; }
+
+.result { display: flex; gap: 12px; padding: 12px 16px; background: var(--karte); border-radius: 14px; border-left: 6px solid var(--gruen); }
+.result.wrong { border-left-color: var(--rost); }
+.result .fremd { font-weight: 800; }
+.result s { opacity: .7; }

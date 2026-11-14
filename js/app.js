@@ -2,6 +2,7 @@ import { renderStart } from './screens/start.js';
 import { renderShelf } from './screens/shelf.js';
 import { renderBook } from './screens/book.js';
 import { renderUnit } from './screens/unit.js';
+import { renderPractice } from './screens/practice.js';
 
 const app = document.getElementById('app');
 
@@ -11,6 +12,7 @@ const routes = [
   { pattern: /^#\/regal$/,           render: renderShelf },
   { pattern: /^#\/buch\/(\w+)$/,     render: renderBook },
   { pattern: /^#\/lektion\/(\w+)$/,  render: renderUnit },
+  { pattern: /^#\/ueben\/(\w+)$/,    render: renderPractice },
 ];
 
 async function router() {
@@ -28,4 +30,4 @@ async function router() {
 }
 
 window.addEventListener('hashchange', router); // reagiert auf Klicks und den Zurück-Knopf
-router();                                       // zeigt beim Laden die erste Seite                                   // zeigt beim Laden die erste Seite
+router();                                       // zeigt beim Laden die erste Seite
