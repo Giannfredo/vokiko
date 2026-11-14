@@ -1,5 +1,6 @@
 import { books, units, vocab, newId } from '../db.js';
 import { esc, SPRACHEN } from '../utils.js';
+import { confirmDialog } from '../ui/dialog.js';
 
 export async function renderBook(app, bookId) {
   const book = await books.get(bookId);
@@ -48,8 +49,13 @@ export async function renderBook(app, bookId) {
     renderBook(app, bookId);
   });
 
-  app.querySelector('#delete-book').addEventListener('click', async () => {
-    if (confirm(`"${book.titel}" mit allen Lektionen und Vokabeln löschen?`)) {
+    app.querySelector('#delete-book').addEventListener('click', async () => {
+    const ok = await confirmDialog({
+      title: 'Buch löschen?',
+      text: `"${book.titel}" wird mit allen Lektionen und Vokabeln gelöscht.`,
+      icon: '📚',
+    });
+    if (ok) {
       await books.remove(bookId);
       location.hash = '#/regal';
     }

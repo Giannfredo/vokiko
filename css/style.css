@@ -124,3 +124,28 @@ input:focus, select:focus { outline: none; border-color: var(--orange); }
 .btn-danger { background: var(--karte); color: var(--rost); box-shadow: 0 4px 0 rgba(194, 80, 46, .3); }
 .empty { opacity: .7; font-style: italic; }
 [hidden] { display: none !important; }
+
+/* ---------- Popup (dialog.js) ---------- */
+.popup {
+  width: min(90vw, 400px);
+  padding: 28px 24px 24px;
+  border: none;
+  border-radius: 24px;
+  background: var(--karte);
+  color: var(--braun);
+  text-align: center;
+  box-shadow: 0 8px 0 rgba(74, 44, 29, .15), 0 20px 50px rgba(74, 44, 29, .25);
+}
+.popup[open] { animation: popup-in .2s ease-out; }
+.popup::backdrop { background: rgba(74, 44, 29, .45); }
+.popup-icon { font-size: 48px; line-height: 1; }
+.popup h2 { margin: 12px 0 8px; }
+.popup p { margin: 0 0 20px; opacity: .85; }
+.popup-buttons { display: flex; gap: 12px; }
+.popup-buttons .btn { flex: 1; }
+.btn-danger-strong { background: var(--rost); box-shadow: 0 4px 0 #8E3A20; }
+
+@keyframes popup-in {
+  from { transform: scale(.85); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}

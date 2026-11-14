@@ -1,5 +1,6 @@
 import { books, units, vocab, newId } from '../db.js';
 import { esc, SPRACHEN } from '../utils.js';
+import { confirmDialog } from '../ui/dialog.js';
 
 export async function renderUnit(app, unitId) {
   const unit = await units.get(unitId);
@@ -92,14 +93,26 @@ export async function renderUnit(app, unitId) {
     const editId = event.target.dataset.edit;
     const deleteId = event.target.dataset.delete;
     if (editId) startEdit(words.find((w) => w.id === editId));
-    if (deleteId && confirm('Diese Vokabel löschen?')) {
+    if (deleteId) {
+      const w = words.find((x) => x.id === deleteId);
+      const ok = await confirmDialog({
+        title: 'Vokabel löschen?',
+        text: `"${w.fremd}" – ${w.deutsch}`,
+        icon: '🗑',
+      });
+      if (!ok) return;
       await vocab.remove(deleteId);
       renderUnit(app, unitId);
     }
   });
 
   app.querySelector('#delete-unit').addEventListener('click', async () => {
-    if (confirm(`Lektion "${unit.name}" mit allen Vokabeln löschen?`)) {
+    const ok = await confirmDialog({
+      title: 'Lektion löschen?',
+      text: `"${unit.name}" wird mit allen ${words.length} Vokabeln gelöscht.`,
+      icon: '📖',
+    });
+    if (ok) {
       await units.remove(unitId);
       location.hash = `#/buch/${book.id}`;
     }
