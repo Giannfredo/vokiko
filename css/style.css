@@ -170,6 +170,46 @@ input:focus, select:focus { outline: none; border-color: var(--orange); }
 .score { font-size: 22px; font-weight: 800; margin-top: 0; }
 
 .result { display: flex; gap: 12px; padding: 12px 16px; background: var(--karte); border-radius: 14px; border-left: 6px solid var(--gruen); }
-.result.wrong { border-left-color: var(--rost); }
+
 .result .fremd { font-weight: 800; }
 .result s { opacity: .7; }
+
+/* ---------- Schritt 4: Schreib-Modi, Aussprache ---------- */
+.btn-choice.selected { outline: 3px solid var(--orange); background: var(--creme); }
+.btn-choice:disabled { opacity: .5; cursor: not-allowed; outline: none; }
+.btn-choice small { display: block; font-weight: 400; font-size: 14px; }
+
+.write-form { display: grid; gap: 12px; margin: 16px 0; }
+.write-form input { font-size: 24px; text-align: center; }
+.accent-bar { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.accent-btn {
+  min-width: 48px;
+  min-height: 48px;
+  border: 2px solid #EAD7C5;
+  border-radius: 12px;
+  background: var(--karte);
+  color: var(--braun);
+  font: inherit;
+  font-size: 20px;
+  cursor: pointer;
+}
+.accent-btn:active { background: var(--creme); }
+
+.quiz-word .speak-btn { vertical-align: middle; }
+
+.result { align-items: flex-start; }
+.result-body { flex: 1; }
+.result.fast { border-left-color: var(--orange); }
+.result.falsch { border-left-color: var(--rost); }
+.fix-btn {
+  margin-top: 8px;
+  min-height: 48px;
+  padding: 8px 16px;
+  border: 2px solid var(--gruen);
+  border-radius: 12px;
+  background: none;
+  color: var(--braun);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}

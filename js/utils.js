@@ -8,6 +8,7 @@ export function esc(text = '') {
 }
 
 export const SPRACHEN = {
-  en: { name: 'Englisch', flagge: '🇬🇧' },
-  fr: { name: 'Französisch', flagge: '🇫🇷' },
+  en: { name: 'Englisch', flagge: '🇬🇧', stimme: 'en-GB', akzente: [] },
+  fr: { name: 'Französisch', flagge: '🇫🇷', stimme: 'fr-FR',
+        akzente: ['é', 'è', 'ê', 'à', 'â', 'ç', 'î', 'ï', 'ô', 'û', 'ù', 'ë', 'œ'] },
 };

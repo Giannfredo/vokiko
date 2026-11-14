@@ -1,5 +1,8 @@
 // quiz.js – Abfrage-Logik ohne HTML (Fragen bauen, auswerten, Sterne, Wort-Status)
 
+// Die drei Abfragemodi
+export const MODI = ['auswahl', 'fremd-de', 'de-fremd'];
+
 // Mischt eine Liste (Fisher-Yates) und gibt eine neue Liste zurück.
 export function shuffle(list) {
   const a = [...list];
@@ -10,21 +13,58 @@ export function shuffle(list) {
   return a;
 }
 
+// ---------- Toleranzregeln ----------
+
+// Groß/Klein egal, Leerzeichen am Rand egal, doppelte Leerzeichen zählen als eins.
+export function normalize(text = '') {
+  return String(text).trim().toLowerCase().replace(/\s+/g, ' ');
+}
+
+// Entfernt Akzente: "café" → "cafe". NFD zerlegt "é" in "e" + Akzentzeichen,
+// danach werden alle Akzentzeichen (Unicode-Bereich U+0300–U+036F) gelöscht.
+export function stripAccents(text = '') {
+  return text.normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
+
+// "die Bibliothek; die Bücherei" → ["die Bibliothek", "die Bücherei"]
+export function meanings(text = '') {
+  return String(text).split(';').map((m) => m.trim()).filter(Boolean);
+}
+
 /**
- * Baut Fragen für den Auswahl-Modus „1 aus 3“.
- * words:  alle Vokabeln der Lektion (für die falschen Antworten)
- * anzahl: wie viele Fragen (Zahl oder 'alle')
- * Ergebnis: [{ vocabId, frage, richtig, optionen: [3 Texte] }]
+ * Prüft eine getippte Antwort gegen die Lösung.
+ * Ergebnis: 'richtig' | 'fast' (nur Akzente falsch/fehlend) | 'falsch'
  */
-export function buildChoiceQuestions(words, anzahl = 'alle') {
+export function checkTyped(eingabe, loesung) {
+  const e = normalize(eingabe);
+  if (!e) return 'falsch';
+  const optionen = meanings(loesung).map(normalize);
+  if (optionen.includes(e)) return 'richtig';
+  if (optionen.map(stripAccents).includes(stripAccents(e))) return 'fast';
+  return 'falsch';
+}
+
+// ---------- Fragen bauen ----------
+
+/**
+ * words:  alle Vokabeln der Lektion
+ * anzahl: wie viele Fragen (Zahl oder 'alle')
+ * modus:  'auswahl' | 'fremd-de' | 'de-fremd'
+ * Ergebnis: [{ vocabId, modus, fremd, frage, richtig, optionen? }]
+ */
+export function buildQuestions(words, anzahl = 'alle', modus = 'auswahl') {
   const n = anzahl === 'alle' ? words.length : Math.min(anzahl, words.length);
   return shuffle(words).slice(0, n).map((word) => {
-    // Falsche Antworten: andere Wörter derselben Lektion mit anderer Bedeutung
+    const basis = { vocabId: word.id, modus, fremd: word.fremd };
+    if (modus === 'de-fremd') return { ...basis, frage: word.deutsch, richtig: word.fremd };
+    if (modus === 'fremd-de') return { ...basis, frage: word.fremd, richtig: word.deutsch };
+
+    // Auswahl „1 aus 3“: falsche Antworten aus derselben Lektion, mit anderer Bedeutung
     const falsche = [...new Set(
       words.filter((w) => w.id !== word.id).map((w) => w.deutsch)
     )].filter((d) => d !== word.deutsch);
     return {
-      vocabId: word.id,
+      ...basis,
       frage: word.fremd,
       richtig: word.deutsch,
       optionen: shuffle([word.deutsch, ...shuffle(falsche).slice(0, 2)]),
@@ -32,14 +72,22 @@ export function buildChoiceQuestions(words, anzahl = 'alle') {
   });
 }
 
-// Wertet die Runde aus. answers[i] ist der angetippte Text zu questions[i].
+// ---------- Auswerten ----------
+
+// answers[i] ist die Antwort (angetippt oder getippt) zu questions[i].
 export function evaluate(questions, answers) {
-  const ergebnisse = questions.map((q, i) => ({
-    ...q,
-    antwort: answers[i],
-    korrekt: answers[i] === q.richtig,
-  }));
-  return { ergebnisse, fehler: ergebnisse.filter((e) => !e.korrekt).length };
+  return questions.map((q, i) => {
+    const antwort = answers[i] ?? '';
+    const ergebnis = q.modus === 'auswahl'
+      ? (antwort === q.richtig ? 'richtig' : 'falsch')
+      : checkTyped(antwort, q.richtig);
+    return { ...q, antwort, ergebnis, korrekt: ergebnis !== 'falsch' };
+  });
+}
+
+// Nur 'falsch' ist ein Fehler, 'fast' nicht.
+export function countErrors(ergebnisse) {
+  return ergebnisse.filter((e) => e.ergebnis === 'falsch').length;
 }
 
 // 0 Fehler = 3 Sterne, bis 20 % = 2, bis 50 % = 1, sonst 0.

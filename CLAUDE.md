@@ -19,8 +19,10 @@ Spezifikation: https://claude.ai/artifact/Ft55XZMdSKqsB6rfLp3tw1
 - `index.html` – Einstieg, lädt `css/style.css` und `js/app.js`
 - `js/app.js` – Hash-Router (`#/start`, `#/regal`, `#/buch/:id`, `#/lektion/:id`, `#/ueben/:id`)
 - `js/db.js` – Speichern/Laden (`books`, `units`, `vocab`, `newId()`)
-- `js/quiz.js` – Abfrage-Logik ohne HTML (Fragen bauen, auswerten, Sterne, Wort-Status)
-- `js/utils.js` – `esc()` und `SPRACHEN`
+- `js/quiz.js` – Abfrage-Logik ohne HTML (Fragen bauen, Toleranzregeln `checkTyped()`, auswerten, Sterne, Wort-Status)
+- `js/speech.js` – Aussprache per Web Speech API (`speak(text, SPRACHEN[x].stimme)`)
+- `js/utils.js` – `esc()` und `SPRACHEN` (Name, Flagge, Stimme, Akzent-Knöpfe)
+- `js/screens/practice.js` – Üben: Modus/Anzahl wählen → Abfrage → Korrekturseite
 - `js/ui/dialog.js` – `confirmDialog()` (eigenes Popup)
 - `js/screens/*.js` – ein Modul pro Bildschirm, Signatur `async function renderX(app, ...params)`
 
@@ -40,7 +42,7 @@ Mehrere Bedeutungen in `deutsch` mit `;` getrennt. 3× hintereinander richtig = 
 - [x] 1 Grundgerüst und Navigation
 - [x] 2 Speichern (Bücher, Lektionen, Vokabeln) + eigenes Lösch-Popup
 - [x] 3 Auswahl-Modus „1 aus 3“ mit Korrekturseite am Ende
-- [ ] 4 Schreib-Modi Fremd→DE und DE→Fremd mit Toleranz (Groß/Klein egal, eine Bedeutung reicht, fehlende Akzente = „fast richtig“), Aussprache per Web Speech API
+- [x] 4 Schreib-Modi Fremd→DE und DE→Fremd mit Toleranz (Groß/Klein egal, eine Bedeutung reicht, fehlende Akzente = „fast richtig“), Aussprache per Web Speech API
 - [ ] 5 Historie: Übungen speichern, „letztes Mal X Fehler, heute Y“, Problemwörter, Export/Import
 - [ ] 6 Foto-Import mit Tesseract.js + Prüfansicht
 - [ ] 7 Design: Kiko-Grafik, Sterne, Konfetti

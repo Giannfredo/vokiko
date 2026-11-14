@@ -1,6 +1,7 @@
 import { books, units, vocab, newId } from '../db.js';
 import { esc, SPRACHEN } from '../utils.js';
 import { confirmDialog } from '../ui/dialog.js';
+import { canSpeak, speak } from '../speech.js';
 
 export async function renderUnit(app, unitId) {
   const unit = await units.get(unitId);
@@ -18,6 +19,7 @@ export async function renderUnit(app, unitId) {
         <div class="fremd">${esc(w.fremd)}</div>
         <div class="deutsch">${esc(w.deutsch)}</div>
       </div>
+      ${canSpeak() ? `<button class="icon-btn" data-speak="${w.id}" title="Anhören">🔊</button>` : ''}
       <button class="icon-btn" data-edit="${w.id}" title="Bearbeiten">✏️</button>
       <button class="icon-btn" data-delete="${w.id}" title="Löschen">🗑</button>
     </li>`).join('');
@@ -26,7 +28,7 @@ export async function renderUnit(app, unitId) {
     <a class="back" href="#/buch/${book.id}">← ${esc(book.titel)}</a>
     <h1>${esc(unit.name)}</h1>
     <p>${words.length} Vokabeln</p>
-    ${words.length >= 3 ? `<a class="btn" href="#/ueben/${unitId}">▶️ Üben</a>` : ''}
+    ${words.length ? `<a class="btn" href="#/ueben/${unitId}">▶️ Üben</a>` : ''}
     ${words.length ? `<ul class="list">${rows}</ul>` : '<p class="empty">Noch keine Vokabeln. Leg unten die erste an!</p>'}
 
     <form class="form" id="vocab-form">
@@ -93,6 +95,8 @@ export async function renderUnit(app, unitId) {
   app.querySelector('.list')?.addEventListener('click', async (event) => {
     const editId = event.target.dataset.edit;
     const deleteId = event.target.dataset.delete;
+    const speakId = event.target.dataset.speak;
+    if (speakId) speak(words.find((w) => w.id === speakId).fremd, sprache.stimme);
     if (editId) startEdit(words.find((w) => w.id === editId));
     if (deleteId) {
       const w = words.find((x) => x.id === deleteId);
