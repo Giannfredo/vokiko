@@ -1,3 +1,4 @@
+/* ---------- Schritt 1: Farben ---------- */
 :root {
   --rost: #C2502E;
   --orange: #F08A3C;
@@ -68,3 +69,58 @@ h1 { font-weight: 800; margin-top: 0; }
 
 .progress { height: 10px; margin-top: 8px; background: #F3E2D3; border-radius: 99px; overflow: hidden; }
 .progress > div { height: 100%; background: var(--gruen); }
+
+/* ---------- Schritt 2: Formulare und Vokabelliste ---------- */
+.form {
+  display: grid;
+  gap: 12px;
+  margin: 32px 0 24px;
+  padding: 20px;
+  background: var(--karte);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 0 rgba(74, 44, 29, .12);
+}
+.form h2 { margin: 0; }
+.form label { display: grid; gap: 4px; font-weight: 700; font-size: 16px; }
+
+input, select {
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 2px solid #EAD7C5;
+  border-radius: 12px;
+  background: white;
+  color: inherit;
+  font: inherit;
+}
+input:focus, select:focus { outline: none; border-color: var(--orange); }
+
+.row { display: flex; flex-wrap: wrap; gap: 12px; }
+.row > * { flex: 1 1 160px; }
+
+.vocab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--karte);
+  border-radius: 14px;
+}
+.vocab .words { flex: 1; }
+.vocab .fremd { font-weight: 800; }
+.vocab .deutsch { opacity: .8; }
+
+.icon-btn {
+  min-width: 44px;
+  min-height: 44px;
+  border: none;
+  border-radius: 12px;
+  background: none;
+  font-size: 22px;
+  cursor: pointer;
+}
+.icon-btn:hover { background: var(--creme); }
+
+.btn-secondary { background: var(--karte); color: var(--braun); box-shadow: 0 4px 0 rgba(74, 44, 29, .2); }
+.btn-danger { background: var(--karte); color: var(--rost); box-shadow: 0 4px 0 rgba(194, 80, 46, .3); }
+.empty { opacity: .7; font-style: italic; }
+[hidden] { display: none !important; }

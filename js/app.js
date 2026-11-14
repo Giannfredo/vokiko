@@ -1,22 +1,24 @@
 import { renderStart } from './screens/start.js';
 import { renderShelf } from './screens/shelf.js';
 import { renderBook } from './screens/book.js';
+import { renderUnit } from './screens/unit.js';
 
 const app = document.getElementById('app');
 
 // Welche Adresse zeigt welchen Bildschirm?
 const routes = [
-  { pattern: /^#\/start$/,        render: renderStart },
-  { pattern: /^#\/regal$/,        render: renderShelf },
-  { pattern: /^#\/buch\/(\w+)$/,  render: renderBook },
+  { pattern: /^#\/start$/,           render: renderStart },
+  { pattern: /^#\/regal$/,           render: renderShelf },
+  { pattern: /^#\/buch\/(\w+)$/,     render: renderBook },
+  { pattern: /^#\/lektion\/(\w+)$/,  render: renderUnit },
 ];
 
-function router() {
+async function router() {
   const hash = location.hash || '#/start';
   for (const route of routes) {
     const match = hash.match(route.pattern);
     if (match) {
-      app.innerHTML = route.render(...match.slice(1));
+      await route.render(app, ...match.slice(1));
       window.scrollTo(0, 0);
       return;
     }
@@ -26,4 +28,4 @@ function router() {
 }
 
 window.addEventListener('hashchange', router); // reagiert auf Klicks und den Zurück-Knopf
-router();                                       // zeigt beim Laden die erste Seite
+router();                                       // zeigt beim Laden die erste Seite                                   // zeigt beim Laden die erste Seite
