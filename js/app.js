@@ -3,6 +3,7 @@ import { renderShelf } from './screens/shelf.js';
 import { renderBook } from './screens/book.js';
 import { renderUnit } from './screens/unit.js';
 import { renderPractice } from './screens/practice.js';
+import { renderHistory } from './screens/history.js';
 
 const app = document.getElementById('app');
 
@@ -13,6 +14,7 @@ const routes = [
   { pattern: /^#\/buch\/(\w+)$/,     render: renderBook },
   { pattern: /^#\/lektion\/(\w+)$/,  render: renderUnit },
   { pattern: /^#\/ueben\/(\w+)$/,    render: renderPractice },
+  { pattern: /^#\/historie$/,        render: renderHistory },
 ];
 
 async function router() {

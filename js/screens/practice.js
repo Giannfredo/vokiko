@@ -1,6 +1,7 @@
-import { books, units, vocab } from '../db.js';
+import { books, units, vocab, sessions, answers as answerDb, newId } from '../db.js';
 import { esc, SPRACHEN } from '../utils.js';
 import { buildQuestions, evaluate, countErrors, stars, updateStatus } from '../quiz.js';
+import { previousSession, compareText, problemWords } from '../history.js';
 import { canSpeak, speak } from '../speech.js';
 
 export async function renderPractice(app, unitId) {
@@ -34,7 +35,9 @@ export async function renderPractice(app, unitId) {
   // ---------- Phase 1: Einstellen ----------
   const auswahlMoeglich = words.length >= 3;
   let modus = auswahlMoeglich ? 'auswahl' : 'fremd-de';
-  const anzahlen = [10, 20].filter((n) => n < words.length);
+  const probleme = problemWords(words);
+  let nurProbleme = false;
+  let gestartetAm = 0;
 
   app.innerHTML = `${back}
     <h1>Üben: ${esc(unit.name)}</h1>
@@ -46,11 +49,28 @@ export async function renderPractice(app, unitId) {
       <button class="btn btn-choice" data-modus="fremd-de">✍️ Schreiben: ${sprache.flagge} → 🇩🇪</button>
       <button class="btn btn-choice" data-modus="de-fremd">✍️ Schreiben: 🇩🇪 → ${sprache.flagge}</button>
     </div>
+    ${probleme.length ? `
+      <label class="toggle">
+        <input type="checkbox" id="nur-probleme">
+        🎯 Nur meine Problemwörter (${probleme.length})
+      </label>` : ''}
     <h2>Wie viele Wörter?</h2>
-    <div class="row" id="anzahl">
+    <div class="row" id="anzahl"></div>`;
+
+  // Die Anzahl-Knöpfe hängen davon ab, ob nur Problemwörter geübt werden
+  function drawAnzahl() {
+    const pool = nurProbleme ? probleme : words;
+    const anzahlen = [10, 20].filter((n) => n < pool.length);
+    app.querySelector('#anzahl').innerHTML = `
       ${anzahlen.map((n) => `<button class="btn" data-n="${n}">${n} Wörter</button>`).join('')}
-      <button class="btn" data-n="alle">Alle (${words.length})</button>
-    </div>`;
+      <button class="btn" data-n="alle">Alle (${pool.length})</button>`;
+  }
+  drawAnzahl();
+
+  app.querySelector('#nur-probleme')?.addEventListener('change', (event) => {
+    nurProbleme = event.target.checked;
+    drawAnzahl();
+  });
 
   function markModus() {
     app.querySelectorAll('[data-modus]').forEach((b) => {
@@ -70,7 +90,9 @@ export async function renderPractice(app, unitId) {
   app.querySelector('#anzahl').addEventListener('click', (event) => {
     const n = event.target.dataset.n;
     if (!n) return;
-    askQuestion(buildQuestions(words, n === 'alle' ? 'alle' : Number(n), modus), []);
+    const pool = nurProbleme ? probleme : words;
+    gestartetAm = Date.now();
+    askQuestion(buildQuestions(words, n === 'alle' ? 'alle' : Number(n), modus, pool), []);
   });
 
   // ---------- Phase 2: Abfrage (ein Wort pro Bildschirm, ohne Richtig/Falsch) ----------
@@ -141,12 +163,39 @@ export async function renderPractice(app, unitId) {
   async function showResults(questions, answers) {
     const ergebnisse = evaluate(questions, answers);
     for (const e of ergebnisse) await saveStatus(e);
-    drawResults(ergebnisse);
+
+    // Übung und Antworten für die Historie speichern
+    const session = {
+      id: newId(),
+      unitId,
+      unitIds: [unitId],
+      modus,
+      nurProbleme,
+      gestartetAm,
+      dauerSek: Math.round((Date.now() - gestartetAm) / 1000),
+      anzahl: ergebnisse.length,
+      fehler: countErrors(ergebnisse),
+      fast: ergebnisse.filter((e) => e.ergebnis === 'fast').length,
+    };
+    await sessions.save(session);
+    ergebnisse.forEach((e) => { e.answerId = newId(); });
+    await answerDb.saveMany(ergebnisse.map((e) => ({
+      id: e.answerId,
+      sessionId: session.id,
+      vocabId: e.vocabId,
+      gezeigt: e.frage,
+      eingegeben: e.antwort,
+      ergebnis: e.ergebnis,
+    })));
+
+    const vorher = previousSession(await sessions.ofUnit(unitId), session);
+    drawResults(ergebnisse, session, vorher);
   }
 
-  function drawResults(ergebnisse) {
+  function drawResults(ergebnisse, session, vorher) {
     const fehler = countErrors(ergebnisse);
     const fast = ergebnisse.filter((e) => e.ergebnis === 'fast').length;
+    const vergleich = compareText(vorher, { fehler });
     const s = stars(fehler, ergebnisse.length);
     const lob = fehler === 0 && fast === 0 ? 'Wow, alles richtig! 🎉'
       : fehler === 0 ? 'Super! Achte nur noch auf die Akzente.'
@@ -181,6 +230,7 @@ export async function renderPractice(app, unitId) {
       <h1>Geschafft!</h1>
       <div class="stars" aria-label="${s} von 3 Sternen">${'★'.repeat(s)}<span class="off">${'★'.repeat(3 - s)}</span></div>
       <p class="score">${fehler} Fehler bei ${ergebnisse.length} Wörtern${fast ? ` · ${fast}× fast richtig` : ''}</p>
+      <p class="compare">${vergleich}</p>
       <div class="kiko-bubble"><strong>Kiko sagt:</strong> ${lob}</div>
       <ul class="list" id="results">${rows}</ul>
       <div class="row">
@@ -196,7 +246,14 @@ export async function renderPractice(app, unitId) {
       const e = ergebnisse[i];
       Object.assign(e, { ergebnis: 'richtig', korrekt: true, manuell: true });
       await saveStatus(e);
-      drawResults(ergebnisse);
+      // Auch in der Historie nachtragen
+      await answerDb.save({
+        id: e.answerId, sessionId: session.id, vocabId: e.vocabId,
+        gezeigt: e.frage, eingegeben: e.antwort, ergebnis: 'richtig', manuell: true,
+      });
+      session.fehler = countErrors(ergebnisse);
+      await sessions.save(session);
+      drawResults(ergebnisse, session, vorher);
     });
 
     app.querySelector('#again').addEventListener('click', () => renderPractice(app, unitId));

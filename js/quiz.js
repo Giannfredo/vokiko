@@ -47,14 +47,15 @@ export function checkTyped(eingabe, loesung) {
 // ---------- Fragen bauen ----------
 
 /**
- * words:  alle Vokabeln der Lektion
+ * words:  alle Vokabeln der Lektion (daraus kommen die falschen Antworten bei „1 aus 3“)
  * anzahl: wie viele Fragen (Zahl oder 'alle')
  * modus:  'auswahl' | 'fremd-de' | 'de-fremd'
+ * pool:   aus welchen Wörtern gefragt wird (z. B. nur Problemwörter), Standard: alle
  * Ergebnis: [{ vocabId, modus, fremd, frage, richtig, optionen? }]
  */
-export function buildQuestions(words, anzahl = 'alle', modus = 'auswahl') {
-  const n = anzahl === 'alle' ? words.length : Math.min(anzahl, words.length);
-  return shuffle(words).slice(0, n).map((word) => {
+export function buildQuestions(words, anzahl = 'alle', modus = 'auswahl', pool = words) {
+  const n = anzahl === 'alle' ? pool.length : Math.min(anzahl, pool.length);
+  return shuffle(pool).slice(0, n).map((word) => {
     const basis = { vocabId: word.id, modus, fremd: word.fremd };
     if (modus === 'de-fremd') return { ...basis, frage: word.deutsch, richtig: word.fremd };
     if (modus === 'fremd-de') return { ...basis, frage: word.fremd, richtig: word.deutsch };
