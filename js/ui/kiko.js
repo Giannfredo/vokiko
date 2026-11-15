@@ -67,6 +67,19 @@ const MUETZE = `
     <path class="k-muetze-stiel" d="M62 13 L64 6"/>
   </g>`;
 
+// Buschiger, geringelter Schwanz hinter dem Kopf (wird zuerst gezeichnet = liegt hinten).
+// Die Ringe sind dieselbe Linie noch einmal, gestrichelt in dunklerem Fell.
+// Der Rand aus vielen kleinen Kreisen (gestrichelt mit runden Enden) macht ihn flauschig.
+// Bei Freude wedelt er (CSS-Animation um den Ansatzpunkt 86/70, siehe style.css).
+const SCHWANZ_LINIE = 'M86 70 C106 76 124 70 128 52 C130 42 127 34 121 28';
+const SCHWANZ = `
+  <g class="k-schwanz">
+    <path class="k-schwanz-flausch" d="${SCHWANZ_LINIE}"/>
+    <path class="k-schwanz-fell" d="${SCHWANZ_LINIE}"/>
+    <path class="k-schwanz-ringe" d="${SCHWANZ_LINIE}"/>
+    <circle class="k-ohr-innen" cx="121" cy="27" r="11.5"/>
+  </g>`;
+
 // Ein Ohr (das rechte entsteht durch Spiegeln)
 const OHR = `
   <path class="k-fell k-ohr-rand" d="M20 52 C10 30 20 12 46 28 Z"/>
@@ -75,7 +88,8 @@ const OHR = `
 export function kikoSvg({ stimmung = 'normal', outfit = null } = {}) {
   const gesicht = GESICHTER[stimmung] || GESICHTER.normal;
   return `
-    <svg class="kiko-svg" viewBox="0 0 120 128" role="img" aria-label="Kiko, der Rote Panda">
+    <svg class="kiko-svg" viewBox="0 0 150 128" role="img" aria-label="Kiko, der Rote Panda">
+      ${SCHWANZ}
       <g>${OHR}</g>
       <g transform="translate(120 0) scale(-1 1)">${OHR}</g>
       <ellipse class="k-fell" cx="60" cy="64" rx="42" ry="36"/>
