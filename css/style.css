@@ -6,6 +6,8 @@
   --braun: #4A2C1D;
   --gruen: #4CAF7A;
   --karte: #FFFFFF;
+  --stern-aus: #EAD7C5;
+  --gelb: #F7C948;
   /* Kiko */
   --fell: #C2502E;
   --fell-dunkel: #7A2E17;
@@ -174,7 +176,8 @@ input:focus, select:focus { outline: none; border-color: var(--orange); }
 .quiz-hint { text-align: center; opacity: .7; margin-top: 0; }
 
 .stars { font-size: 48px; color: var(--orange); letter-spacing: 6px; }
-.stars .off { color: #EAD7C5; }
+.stars .star { display: inline-block; }
+.stars .off { color: var(--stern-aus); }
 .score { font-size: 22px; font-weight: 800; margin-top: 0; }
 
 .result { display: flex; gap: 12px; padding: 12px 16px; background: var(--karte); border-radius: 14px; border-left: 6px solid var(--gruen); }
@@ -241,7 +244,7 @@ input:focus, select:focus { outline: none; border-color: var(--orange); }
 .session { display: grid; gap: 4px; }
 .session-head { display: flex; justify-content: space-between; gap: 8px; }
 .stars-small { color: var(--orange); white-space: nowrap; }
-.stars-small .off { color: #EAD7C5; }
+.stars-small .off { color: var(--stern-aus); }
 
 .badge {
   padding: 4px 10px;
@@ -376,3 +379,14 @@ a.icon-btn { display: inline-flex; align-items: center; justify-content: center;
 @keyframes kiko-huepfen { 50% { transform: translateY(-12px); } }
 @keyframes kiko-wippen { 50% { transform: rotate(-5deg); } }
 @keyframes blinzeln { 0%, 94%, 100% { transform: scaleY(1); } 97% { transform: scaleY(.1); } }
+
+/* ---------- Schritt 7b: Sterne und Konfetti ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  /* Sterne ploppen nacheinander auf (--i = 0, 1, 2), volle Sterne federn nach */
+  .stars.animiert .star { animation: stern-plopp .45s cubic-bezier(.3, 1.7, .5, 1) both; animation-delay: calc(var(--i) * .25s + .2s); }
+  .stars.animiert .star.off { animation-name: stern-leise; }
+}
+@keyframes stern-plopp { from { transform: scale(0) rotate(-40deg); opacity: 0; } }
+@keyframes stern-leise { from { opacity: 0; } }
+
+.konfetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; }

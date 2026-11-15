@@ -1,9 +1,10 @@
 import { books, units, vocab, sessions, answers as answerDb, newId } from '../db.js';
 import { esc, SPRACHEN } from '../utils.js';
 import { buildQuestions, evaluate, countErrors, stars, updateStatus } from '../quiz.js';
-import { previousSession, compareText, problemWords } from '../history.js';
+import { previousSession, compareText, problemWords, isBestleistung } from '../history.js';
 import { canSpeak, speak } from '../speech.js';
 import { kikoSays } from '../ui/kiko.js';
+import { konfetti } from '../ui/konfetti.js';
 
 export async function renderPractice(app, unitId) {
   const unit = await units.get(unitId);
@@ -190,10 +191,13 @@ export async function renderPractice(app, unitId) {
     })));
 
     const vorher = previousSession(await sessions.ofUnit(unitId), session);
-    drawResults(ergebnisse, session, vorher);
+    drawResults(ergebnisse, session, vorher, true);
   }
 
-  function drawResults(ergebnisse, session, vorher) {
+  let gefeiert = false; // Konfetti nur einmal pro Runde
+
+  // ersteAnzeige: Sterne nur beim ersten Mal einzeln aufploppen lassen (nicht nach „Doch richtig“)
+  function drawResults(ergebnisse, session, vorher, ersteAnzeige = false) {
     const fehler = countErrors(ergebnisse);
     const fast = ergebnisse.filter((e) => e.ergebnis === 'fast').length;
     const vergleich = compareText(vorher, { fehler });
@@ -204,6 +208,8 @@ export async function renderPractice(app, unitId) {
       : s === 1 ? 'Gut dabei! Schau dir die Fehler unten nochmal an.'
       : 'Nochmal probieren? Mit jeder Runde wird es leichter.';
     const stimmung = s === 3 ? 'freude' : s === 2 ? 'normal' : 'troestet';
+    const sterne = [0, 1, 2]
+      .map((i) => `<span class="star ${i < s ? 'on' : 'off'}" style="--i:${i}">★</span>`).join('');
 
     const rows = ergebnisse.map((e, i) => {
       const deine = e.antwort.trim() ? esc(e.antwort) : '<em>keine Antwort</em>';
@@ -230,7 +236,7 @@ export async function renderPractice(app, unitId) {
 
     app.innerHTML = `${back}
       <h1>Geschafft!</h1>
-      <div class="stars" aria-label="${s} von 3 Sternen">${'★'.repeat(s)}<span class="off">${'★'.repeat(3 - s)}</span></div>
+      <div class="stars ${ersteAnzeige ? 'animiert' : ''}" role="img" aria-label="${s} von 3 Sternen">${sterne}</div>
       <p class="score">${fehler} Fehler bei ${ergebnisse.length} Wörtern${fast ? ` · ${fast}× fast richtig` : ''}</p>
       <p class="compare">${vergleich}</p>
       ${kikoSays(lob, { stimmung, outfit: sprache.outfit })}
@@ -240,6 +246,12 @@ export async function renderPractice(app, unitId) {
         <a class="btn btn-secondary" href="#/lektion/${unitId}">Zur Lektion</a>
       </div>`;
     wireSpeak();
+
+    // Konfetti bei Bestleistung – beim ersten Mal erst, wenn die Sterne da sind
+    if (!gefeiert && isBestleistung(vorher, fehler, s)) {
+      gefeiert = true;
+      konfetti({ ursprung: app.querySelector('.stars'), verzoegerung: ersteAnzeige ? 950 : 0 });
+    }
 
     // „Doch richtig“: z. B. ein Synonym, das nicht in der Liste steht
     app.querySelector('#results').addEventListener('click', async (event) => {

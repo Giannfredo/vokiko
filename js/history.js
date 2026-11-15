@@ -25,6 +25,12 @@ export function compareText(vorher, heute) {
   return `Letztes Mal ${v} Fehler, heute ${h}. Beim nächsten Mal klappt's wieder besser!`;
 }
 
+// Bestleistung (dann gibt es Konfetti): alles richtig (3 Sterne)
+// oder weniger Fehler als beim letzten Mal in derselben Lektion und demselben Modus.
+export function isBestleistung(vorher, fehler, sterne) {
+  return sterne === 3 || (vorher !== null && fehler < vorher.fehler);
+}
+
 // Problemwörter: schon mal falsch und noch nicht sicher – die mit den meisten Fehlern zuerst.
 export function isProblem(word) {
   return (word.fehlerGesamt || 0) > 0 && word.status !== 'sicher';

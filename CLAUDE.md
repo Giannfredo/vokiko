@@ -11,7 +11,7 @@ Spezifikation: https://claude.ai/artifact/Ft55XZMdSKqsB6rfLp3tw1
 
 ## Technik
 - Reines HTML, CSS, JavaScript (ES-Module), kein Framework, kein Build-Schritt.
-- Starten: `python3 -m http.server 8000` im Projektordner → http://localhost:8000
+- Starten: `python3 server.py` im Projektordner → http://localhost:8000 (wie `http.server`, aber ohne Browser-Cache, damit nie alte und neue Module gemischt werden)
 - Speicher: IndexedDB, **nur** über `js/db.js` (Tabellen `books`, `units`, `vocab`, `sessions`, `answers`; DB_VERSION 2 – neue Tabellen nur in `onupgradeneeded` je nach `oldVersion` anlegen).
 - Teilen: Prototyp läuft auf **GitHub Pages** (https://giannfredo.github.io/vokiko/, Repo `Giannfredo/vokiko`, HTTPS, öffentlicher Link für Tester außerhalb des Heimnetzes). Dafür alle Pfade relativ halten (kein führendes `/`), Router nur per `#`-Hash. Repo ist öffentlich → keine Schulbuchfotos oder privaten Daten committen. Veröffentlichen: committen, dann `git push` – nach ca. 1 Min. online. Commits nur mit der noreply-Adresse (ist eingestellt). Fritzbox-Portfreigabe nur als Notlösung (Heimnetz offen, eigenes Zertifikat, Mac muss laufen).
 - Später: PWA, danach Capacitor für iOS/Android (gleicher Code).
@@ -30,6 +30,7 @@ Spezifikation: https://claude.ai/artifact/Ft55XZMdSKqsB6rfLp3tw1
 - `js/screens/import.js` – Foto-Import: Foto wählen → vorbereiten (drehen, Rahmen um Vokabelbereiche ziehen, mehrere möglich, Pointer-Events) → OCR + Parser je Bereich → Prüfansicht → Speichern (Doppelte werden übersprungen)
 - `js/screens/history.js` – Historie: Problemwörter, alle Übungen, Export/Import
 - `js/ui/dialog.js` – `confirmDialog()` (eigenes Popup)
+- `js/ui/konfetti.js` – `konfetti({ursprung, verzoegerung})`: Canvas-Konfetti in den App-Farben, aus bei „Bewegung reduzieren“
 - `js/ui/kiko.js` – Kiko als SVG: `kikoSvg({stimmung, outfit})`, `kikoSays(html, {stimmung, outfit})`; Stimmungen `normal|freude|denkt|troestet`, Outfit aus `SPRACHEN[x].outfit` (`schal`/`muetze`)
 - `js/screens/*.js` – ein Modul pro Bildschirm, Signatur `async function renderX(app, ...params)`
 
