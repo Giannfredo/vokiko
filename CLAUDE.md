@@ -12,7 +12,7 @@ Spezifikation: https://claude.ai/artifact/Ft55XZMdSKqsB6rfLp3tw1
 ## Technik
 - Reines HTML, CSS, JavaScript (ES-Module), kein Framework, kein Build-Schritt.
 - Starten: `python3 server.py` im Projektordner → http://localhost:8000 (wie `http.server`, aber ohne Browser-Cache, damit nie alte und neue Module gemischt werden)
-- Speicher: IndexedDB, **nur** über `js/db.js` (Tabellen `books`, `units`, `vocab`, `sessions`, `answers`; DB_VERSION 2 – neue Tabellen nur in `onupgradeneeded` je nach `oldVersion` anlegen).
+- Speicher: IndexedDB, **nur** über `js/db.js` (Tabellen `books`, `units`, `vocab`, `sessions`, `answers`; DB_VERSION 2 – neue Tabellen nur in `onupgradeneeded` je nach `oldVersion` anlegen). Einzige Ausnahme: das Design-Thema liegt in `localStorage` (`vokiko-thema`), weil es vor dem ersten Zeichnen bekannt sein muss.
 - Teilen: Prototyp läuft auf **GitHub Pages** (https://giannfredo.github.io/vokiko/, Repo `Giannfredo/vokiko`, HTTPS, öffentlicher Link für Tester außerhalb des Heimnetzes). Dafür alle Pfade relativ halten (kein führendes `/`), Router nur per `#`-Hash. Repo ist öffentlich → keine Schulbuchfotos oder privaten Daten committen. Veröffentlichen: committen, dann `git push` – nach ca. 1 Min. online. Commits nur mit der noreply-Adresse (ist eingestellt). Fritzbox-Portfreigabe nur als Notlösung (Heimnetz offen, eigenes Zertifikat, Mac muss laufen).
 - Später: PWA, danach Capacitor für iOS/Android (gleicher Code).
 
@@ -31,13 +31,14 @@ Spezifikation: https://claude.ai/artifact/Ft55XZMdSKqsB6rfLp3tw1
 - `js/screens/history.js` – Historie: Problemwörter, alle Übungen, Export/Import
 - `js/ui/dialog.js` – `confirmDialog()` (eigenes Popup)
 - `js/ui/konfetti.js` – `konfetti({ursprung, verzoegerung})`: Canvas-Konfetti in den App-Farben, aus bei „Bewegung reduzieren“
+- `js/ui/thema.js` – Design-Thema bunt/dunkel (`data-theme="dunkel"` am `<html>`, Knopf in der Kopfleiste)
 - `js/ui/kiko.js` – Kiko als SVG: `kikoSvg({stimmung, outfit})`, `kikoSays(html, {stimmung, outfit})`; Stimmungen `normal|freude|denkt|troestet`, Outfit aus `SPRACHEN[x].outfit` (`schal`/`muetze`)
 - `js/screens/*.js` – ein Modul pro Bildschirm, Signatur `async function renderX(app, ...params)`
 
 ## Regeln
 - Jeder Text, den Nutzer eingeben, wird mit `esc()` ins HTML eingefügt.
 - Nie `alert()`/`confirm()` – immer `confirmDialog()` aus `js/ui/dialog.js`.
-- Farben nur über die CSS-Variablen in `:root` (`--rost`, `--orange`, `--creme`, `--braun`, `--gruen`).
+- Farben nur über die CSS-Variablen in `:root` (`--rost`, `--orange`, `--creme` = Hintergrund, `--braun` = Schrift, `--gruen`, `--karte`, `--feld`, `--rahmen` …). Neue Farben immer als Variable anlegen und für das dunkle Thema in `:root[data-theme="dunkel"]` mitdenken.
 - Tippflächen mindestens 48 px hoch.
 - IDs mit `newId()` (kein `crypto.randomUUID`, das braucht HTTPS).
 
@@ -63,6 +64,6 @@ Problemwort = `fehlerGesamt > 0` und nicht `sicher`. Vergleich „letztes Mal“
 - [x] 5 Historie: Übungen speichern, „letztes Mal X Fehler, heute Y“, Problemwörter, Export/Import
 - [x] 6 Foto-Import mit Tesseract.js + Bereiche markieren + Prüfansicht (läuft; Erkennungsqualität wird noch verbessert)
 - [x] 6b Teilen: Prototyp auf GitHub Pages (https://giannfredo.github.io/vokiko/), läuft auch außerhalb des WLANs
-- [ ] 7 Design: Kiko-Grafik, Sterne, Konfetti
+- [x] 7 Design: Kiko-Grafik (SVG, Stimmungen, Sprach-Outfits, wedelnder Schwanz), Sterne, Konfetti bei Bestleistung, dunkles Thema
 - [ ] 8 PWA (offline, Homescreen)
 - [ ] 9 Capacitor → iPhone/Android

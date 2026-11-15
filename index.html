@@ -4,12 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vokiko</title>
+  <!-- Gespeichertes Design-Thema sofort setzen (vor dem Zeichnen), siehe js/ui/thema.js -->
+  <script>try { if (localStorage.getItem('vokiko-thema') === 'dunkel') document.documentElement.dataset.theme = 'dunkel'; } catch (e) {}</script>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <header class="topbar">
     <a href="#/start" class="logo">🐾 Vokiko</a>
+    <button type="button" class="theme-btn" id="theme-btn">🌙</button>
   </header>
   <main id="app"></main>
   <script type="module" src="js/app.js"></script>

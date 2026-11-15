@@ -6,9 +6,11 @@ import { renderPractice } from './screens/practice.js';
 import { renderHistory } from './screens/history.js';
 import { renderImport } from './screens/import.js';
 import { kikoSvg } from './ui/kiko.js';
+import { initThemaKnopf } from './ui/thema.js';
 
 const app = document.getElementById('app');
 document.querySelector('.logo').innerHTML = `<span class="logo-kiko">${kikoSvg()}</span> Vokiko`;
+initThemaKnopf(document.getElementById('theme-btn'));
 
 // Welche Adresse zeigt welchen Bildschirm?
 const routes = [
