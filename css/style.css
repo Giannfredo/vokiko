@@ -370,7 +370,8 @@ a.icon-btn { display: inline-flex; align-items: center; justify-content: center;
 
 /* Kiko links, Sprechblase rechts mit kleiner Spitze zu Kiko */
 .kiko-says { display: flex; align-items: flex-end; gap: 14px; margin-bottom: 24px; }
-.kiko-says .kiko { flex: 0 0 110px; }
+.kiko-says .kiko { flex: 0 0 110px; padding: 0; border: none; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.kiko-says .kiko:focus-visible { outline: 3px solid var(--orange); outline-offset: 4px; border-radius: var(--radius); }
 .kiko-says .kiko-bubble { flex: 1; margin-bottom: 0; position: relative; }
 .kiko-says .kiko-bubble::before {
   content: ''; position: absolute; left: -10px; bottom: 18px;
@@ -385,6 +386,8 @@ a.icon-btn { display: inline-flex; align-items: center; justify-content: center;
   .kiko-says .kiko { animation: kiko-rein .4s ease-out; }
   .kiko-denkt .kiko-svg { animation: kiko-wippen 1.6s ease-in-out infinite; }
   .kiko-freude .k-schwanz { animation: wedeln .3s ease-in-out .4s 8 alternate; }
+  .kiko-says.gestreichelt .k-schwanz { animation: wedeln .3s ease-in-out 8 alternate; } /* sofort, ohne Verzögerung */
+  .kiko-says.gestreichelt .kiko-svg { animation: none; }                                /* nicht gleichzeitig wippen */
   .kiko-svg .augen { animation: blinzeln 5s infinite; transform-box: fill-box; transform-origin: center; }
 }
 @keyframes kiko-rein { from { opacity: 0; transform: scale(.7) translateY(10px); } }

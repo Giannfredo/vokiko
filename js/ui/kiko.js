@@ -111,8 +111,32 @@ export function kikoSvg({ stimmung = 'normal', outfit = null } = {}) {
  */
 export function kikoSays(text, { stimmung = 'normal', outfit = null } = {}) {
   return `
-    <div class="kiko-says kiko-${stimmung}">
-      <div class="kiko">${kikoSvg({ stimmung, outfit })}</div>
+    <div class="kiko-says kiko-${stimmung}" data-stimmung="${stimmung}" data-outfit="${outfit || ''}">
+      <button type="button" class="kiko" aria-label="Kiko streicheln">${kikoSvg({ stimmung, outfit })}</button>
       <div class="kiko-bubble"><span class="visually-hidden">Kiko sagt:</span> ${text}</div>
     </div>`;
+}
+
+const FREUDE_DAUER = 2600; // ms – passt zum Wedeln in style.css (8 × 0,3 s)
+
+/**
+ * Kiko streicheln: Ein Klick auf Kiko zeigt kurz das Freude-Gesicht und lässt ihn wedeln,
+ * danach kommt die vorherige Stimmung zurück. Einmal beim App-Start aufrufen – ein einziger
+ * Lauscher am Dokument reicht für alle Kikos, auch auf später gezeichneten Bildschirmen.
+ */
+export function initKikoStreicheln() {
+  const timer = new WeakMap(); // je Kiko der laufende „zurück zur alten Stimmung“-Timer
+  document.addEventListener('click', (event) => {
+    const knopf = event.target.closest('.kiko-says .kiko');
+    if (!knopf) return;
+    const box = knopf.closest('.kiko-says');
+    const outfit = box.dataset.outfit || null;
+    clearTimeout(timer.get(box));
+    box.classList.add('gestreichelt');
+    knopf.innerHTML = kikoSvg({ stimmung: 'freude', outfit }); // neues SVG = Wedeln startet neu
+    timer.set(box, setTimeout(() => {
+      box.classList.remove('gestreichelt');
+      knopf.innerHTML = kikoSvg({ stimmung: box.dataset.stimmung, outfit });
+    }, FREUDE_DAUER));
+  });
 }

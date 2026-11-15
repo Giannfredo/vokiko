@@ -5,7 +5,7 @@ import { renderUnit } from './screens/unit.js';
 import { renderPractice } from './screens/practice.js';
 import { renderHistory } from './screens/history.js';
 import { renderImport } from './screens/import.js';
-import { kikoSvg } from './ui/kiko.js';
+import { kikoSvg, initKikoStreicheln } from './ui/kiko.js';
 import { initThemaKnopf } from './ui/thema.js';
 import { initInstallieren, istInstalliert } from './ui/installieren.js';
 
@@ -13,6 +13,7 @@ const app = document.getElementById('app');
 document.querySelector('.logo').innerHTML = `<span class="logo-kiko">${kikoSvg()}</span> Vokiko`;
 initThemaKnopf(document.getElementById('theme-btn'));
 initInstallieren();
+initKikoStreicheln();
 
 // Offline-Fähigkeit (Schritt 8): Service Worker anmelden
 if ('serviceWorker' in navigator) {
