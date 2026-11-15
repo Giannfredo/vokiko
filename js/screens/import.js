@@ -1,5 +1,6 @@
 import { books, units, vocab, newId } from '../db.js';
 import { esc, SPRACHEN } from '../utils.js';
+import { kikoSays } from '../ui/kiko.js';
 import { confirmDialog } from '../ui/dialog.js';
 import { loadImage, prepareImage, recognizeAll } from '../ocr.js';
 import { parseWords } from '../parser.js';
@@ -18,9 +19,8 @@ export async function renderImport(app, unitId) {
   // ---------- Phase 1: Foto wählen ----------
   app.innerHTML = `${back}
     <h1>📷 Foto einlesen</h1>
-    <div class="kiko-bubble"><strong>Kiko sagt:</strong>
-      Fotografiere die Vokabelliste möglichst gerade, hell und scharf. Am besten nur eine Seite pro Foto.
-    </div>
+    ${kikoSays('Fotografiere die Vokabelliste möglichst gerade, hell und scharf. Am besten nur eine Seite pro Foto.',
+      { outfit: sprache.outfit })}
     <div class="row">
       <label class="btn file-btn">📷 Foto aufnehmen
         <input type="file" accept="image/*" capture="environment" hidden data-photo>
@@ -141,6 +141,7 @@ export async function renderImport(app, unitId) {
   async function runOcr(canvases) {
     app.innerHTML = `${back}
       <h1>📷 Foto einlesen</h1>
+      ${kikoSays('Hmm, mal sehen … Ich lese die Wörter. Das dauert einen Moment.', { stimmung: 'denkt', outfit: sprache.outfit })}
       <div class="preview-box preview-strip" id="preview"></div>
       <p id="ocr-status">Einen Moment …</p>
       <div class="progress"><div id="ocr-bar" style="width:0%"></div></div>`;

@@ -30,6 +30,7 @@ Spezifikation: https://claude.ai/artifact/Ft55XZMdSKqsB6rfLp3tw1
 - `js/screens/import.js` – Foto-Import: Foto wählen → vorbereiten (drehen, Rahmen um Vokabelbereiche ziehen, mehrere möglich, Pointer-Events) → OCR + Parser je Bereich → Prüfansicht → Speichern (Doppelte werden übersprungen)
 - `js/screens/history.js` – Historie: Problemwörter, alle Übungen, Export/Import
 - `js/ui/dialog.js` – `confirmDialog()` (eigenes Popup)
+- `js/ui/kiko.js` – Kiko als SVG: `kikoSvg({stimmung, outfit})`, `kikoSays(html, {stimmung, outfit})`; Stimmungen `normal|freude|denkt|troestet`, Outfit aus `SPRACHEN[x].outfit` (`schal`/`muetze`)
 - `js/screens/*.js` – ein Modul pro Bildschirm, Signatur `async function renderX(app, ...params)`
 
 ## Regeln

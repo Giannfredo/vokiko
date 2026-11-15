@@ -3,6 +3,7 @@ import { esc, SPRACHEN } from '../utils.js';
 import { buildQuestions, evaluate, countErrors, stars, updateStatus } from '../quiz.js';
 import { previousSession, compareText, problemWords } from '../history.js';
 import { canSpeak, speak } from '../speech.js';
+import { kikoSays } from '../ui/kiko.js';
 
 export async function renderPractice(app, unitId) {
   const unit = await units.get(unitId);
@@ -27,7 +28,7 @@ export async function renderPractice(app, unitId) {
   if (words.length === 0) {
     app.innerHTML = `${back}
       <h1>Noch keine Wörter</h1>
-      <div class="kiko-bubble"><strong>Kiko sagt:</strong> Leg zuerst ein paar Vokabeln an, dann üben wir!</div>
+      ${kikoSays('Leg zuerst ein paar Vokabeln an, dann üben wir!', { outfit: sprache.outfit })}
       <a class="btn" href="#/lektion/${unitId}">➕ Vokabeln anlegen</a>`;
     return;
   }
@@ -202,6 +203,7 @@ export async function renderPractice(app, unitId) {
       : s >= 2 ? 'Super gemacht! Nur ein paar kleine Fehler.'
       : s === 1 ? 'Gut dabei! Schau dir die Fehler unten nochmal an.'
       : 'Nochmal probieren? Mit jeder Runde wird es leichter.';
+    const stimmung = s === 3 ? 'freude' : s === 2 ? 'normal' : 'troestet';
 
     const rows = ergebnisse.map((e, i) => {
       const deine = e.antwort.trim() ? esc(e.antwort) : '<em>keine Antwort</em>';
@@ -231,7 +233,7 @@ export async function renderPractice(app, unitId) {
       <div class="stars" aria-label="${s} von 3 Sternen">${'★'.repeat(s)}<span class="off">${'★'.repeat(3 - s)}</span></div>
       <p class="score">${fehler} Fehler bei ${ergebnisse.length} Wörtern${fast ? ` · ${fast}× fast richtig` : ''}</p>
       <p class="compare">${vergleich}</p>
-      <div class="kiko-bubble"><strong>Kiko sagt:</strong> ${lob}</div>
+      ${kikoSays(lob, { stimmung, outfit: sprache.outfit })}
       <ul class="list" id="results">${rows}</ul>
       <div class="row">
         <button class="btn" id="again">🔁 Nochmal üben</button>

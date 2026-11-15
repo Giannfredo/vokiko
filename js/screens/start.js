@@ -1,4 +1,5 @@
 import { books } from '../db.js';
+import { kikoSays } from '../ui/kiko.js';
 
 export async function renderStart(app) {
   const anzahl = (await books.all()).length;
@@ -8,7 +9,7 @@ export async function renderStart(app) {
 
   app.innerHTML = `
     <h1>Hallo! 👋</h1>
-    <div class="kiko-bubble"><strong>Kiko sagt:</strong> ${text}</div>
+    ${kikoSays(text, { stimmung: anzahl === 0 ? 'normal' : 'freude' })}
     <div class="row">
       <a class="btn" href="#/regal">📚 Zum Bücherregal</a>
       <a class="btn btn-secondary" href="#/historie">📊 Historie</a>
