@@ -13,7 +13,7 @@ Spezifikation: https://claude.ai/artifact/Ft55XZMdSKqsB6rfLp3tw1
 - Reines HTML, CSS, JavaScript (ES-Module), kein Framework, kein Build-Schritt.
 - Starten: `python3 -m http.server 8000` im Projektordner → http://localhost:8000
 - Speicher: IndexedDB, **nur** über `js/db.js` (Tabellen `books`, `units`, `vocab`, `sessions`, `answers`; DB_VERSION 2 – neue Tabellen nur in `onupgradeneeded` je nach `oldVersion` anlegen).
-- Teilen: Prototyp läuft auf **GitHub Pages** (`https://<konto>.github.io/vokiko/`, HTTPS, öffentlicher Link für Tester außerhalb des Heimnetzes). Dafür alle Pfade relativ halten (kein führendes `/`), Router nur per `#`-Hash. Repo ist öffentlich → keine Schulbuchfotos oder privaten Daten committen. Fritzbox-Portfreigabe nur als Notlösung (Heimnetz offen, eigenes Zertifikat, Mac muss laufen).
+- Teilen: Prototyp läuft auf **GitHub Pages** (https://giannfredo.github.io/vokiko/, Repo `Giannfredo/vokiko`, HTTPS, öffentlicher Link für Tester außerhalb des Heimnetzes). Dafür alle Pfade relativ halten (kein führendes `/`), Router nur per `#`-Hash. Repo ist öffentlich → keine Schulbuchfotos oder privaten Daten committen. Veröffentlichen: committen, dann `git push` – nach ca. 1 Min. online. Commits nur mit der noreply-Adresse (ist eingestellt). Fritzbox-Portfreigabe nur als Notlösung (Heimnetz offen, eigenes Zertifikat, Mac muss laufen).
 - Später: PWA, danach Capacitor für iOS/Android (gleicher Code).
 
 ## Struktur
@@ -60,7 +60,7 @@ Problemwort = `fehlerGesamt > 0` und nicht `sicher`. Vergleich „letztes Mal“
 - [x] 4 Schreib-Modi Fremd→DE und DE→Fremd mit Toleranz (Groß/Klein egal, eine Bedeutung reicht, fehlende Akzente = „fast richtig“), Aussprache per Web Speech API
 - [x] 5 Historie: Übungen speichern, „letztes Mal X Fehler, heute Y“, Problemwörter, Export/Import
 - [x] 6 Foto-Import mit Tesseract.js + Bereiche markieren + Prüfansicht (läuft; Erkennungsqualität wird noch verbessert)
-- [ ] 6b Teilen: Prototyp auf GitHub Pages veröffentlichen, Link an Tester, Feedback sammeln (fertig, wenn jemand außerhalb des WLANs die App öffnen kann)
+- [x] 6b Teilen: Prototyp auf GitHub Pages (https://giannfredo.github.io/vokiko/), läuft auch außerhalb des WLANs
 - [ ] 7 Design: Kiko-Grafik, Sterne, Konfetti
 - [ ] 8 PWA (offline, Homescreen)
 - [ ] 9 Capacitor → iPhone/Android
