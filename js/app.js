@@ -7,10 +7,20 @@ import { renderHistory } from './screens/history.js';
 import { renderImport } from './screens/import.js';
 import { kikoSvg } from './ui/kiko.js';
 import { initThemaKnopf } from './ui/thema.js';
+import { initInstallieren, istInstalliert } from './ui/installieren.js';
 
 const app = document.getElementById('app');
 document.querySelector('.logo').innerHTML = `<span class="logo-kiko">${kikoSvg()}</span> Vokiko`;
 initThemaKnopf(document.getElementById('theme-btn'));
+initInstallieren();
+
+// Offline-Fähigkeit (Schritt 8): Service Worker anmelden
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./service-worker.js')
+    .catch((fehler) => console.warn('Service Worker nicht angemeldet:', fehler));
+}
+// Als installierte App den Browser bitten, die Lerndaten nicht von selbst zu löschen
+if (istInstalliert()) navigator.storage?.persist?.();
 
 // Welche Adresse zeigt welchen Bildschirm?
 const routes = [

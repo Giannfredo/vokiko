@@ -18,6 +18,8 @@ Spezifikation: https://claude.ai/artifact/Ft55XZMdSKqsB6rfLp3tw1
 
 ## Struktur
 - `index.html` – Einstieg, lädt `css/style.css` und `js/app.js`
+- `manifest.json` + `icons/` – PWA-Steckbrief und App-Icons (Kiko, erzeugt aus `kikoSvg`)
+- `service-worker.js` – offline: eigene Dateien Netz-zuerst (mit Cache als Rückfall), Schrift/Tesseract Cache-zuerst
 - `js/app.js` – Hash-Router (`#/start`, `#/regal`, `#/buch/:id`, `#/lektion/:id`, `#/ueben/:id`, `#/historie`, `#/foto/:id`)
 - `js/db.js` – Speichern/Laden (`books`, `units`, `vocab`, `sessions`, `answers`, `newId()`, `exportAll()`/`importAll()`)
 - `js/quiz.js` – Abfrage-Logik ohne HTML (Fragen bauen, Toleranzregeln `checkTyped()`, auswerten, Sterne, Wort-Status)
@@ -31,6 +33,7 @@ Spezifikation: https://claude.ai/artifact/Ft55XZMdSKqsB6rfLp3tw1
 - `js/screens/history.js` – Historie: Problemwörter, alle Übungen, Export/Import
 - `js/ui/dialog.js` – `confirmDialog()` (eigenes Popup)
 - `js/ui/konfetti.js` – `konfetti({ursprung, verzoegerung})`: Canvas-Konfetti in den App-Farben, aus bei „Bewegung reduzieren“
+- `js/ui/installieren.js` – Hinweis/Knopf „Als App installieren“ auf der Startseite (nicht in der installierten App)
 - `js/ui/thema.js` – Design-Thema bunt/dunkel (`data-theme="dunkel"` am `<html>`, Knopf in der Kopfleiste)
 - `js/ui/kiko.js` – Kiko als SVG: `kikoSvg({stimmung, outfit})`, `kikoSays(html, {stimmung, outfit})`; Stimmungen `normal|freude|denkt|troestet`, Outfit aus `SPRACHEN[x].outfit` (`schal`/`muetze`)
 - `js/screens/*.js` – ein Modul pro Bildschirm, Signatur `async function renderX(app, ...params)`
@@ -40,6 +43,7 @@ Spezifikation: https://claude.ai/artifact/Ft55XZMdSKqsB6rfLp3tw1
 - Nie `alert()`/`confirm()` – immer `confirmDialog()` aus `js/ui/dialog.js`.
 - Farben nur über die CSS-Variablen in `:root` (`--rost`, `--orange`, `--creme` = Hintergrund, `--braun` = Schrift, `--gruen`, `--karte`, `--feld`, `--rahmen` …). Neue Farben immer als Variable anlegen und für das dunkle Thema in `:root[data-theme="dunkel"]` mitdenken.
 - Tippflächen mindestens 48 px hoch.
+- Neue Datei angelegt? → in `APP_DATEIEN` in `service-worker.js` eintragen (sonst fehlt sie offline).
 - IDs mit `newId()` (kein `crypto.randomUUID`, das braucht HTTPS).
 
 ## Foto-Import testen

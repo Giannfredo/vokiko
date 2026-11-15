@@ -432,3 +432,11 @@ a.icon-btn { display: inline-flex; align-items: center; justify-content: center;
   cursor: pointer;
 }
 .theme-btn:hover { background: rgb(var(--schatten-rgb) / .35); }
+
+/* ---------- Schritt 8: PWA – Installations-Hinweis ---------- */
+.install { margin-top: 32px; padding: 4px 20px; background: var(--karte); border-radius: var(--radius); box-shadow: 0 4px 0 rgb(var(--schatten-rgb) / .12); }
+div.install { padding: 20px; }
+.install summary { min-height: 48px; display: flex; align-items: center; cursor: pointer; font-weight: 800; }
+.install ol { padding-left: 24px; line-height: 1.6; }
+.install p { margin: 8px 0; }
+.install .btn { width: 100%; }

@@ -1,5 +1,6 @@
 import { books } from '../db.js';
 import { kikoSays } from '../ui/kiko.js';
+import { installHinweis, zeichnen as zeichneInstallHinweis } from '../ui/installieren.js';
 
 export async function renderStart(app) {
   const anzahl = (await books.all()).length;
@@ -14,5 +15,7 @@ export async function renderStart(app) {
       <a class="btn" href="#/regal">📚 Zum Bücherregal</a>
       <a class="btn btn-secondary" href="#/historie">📊 Historie</a>
     </div>
+    ${installHinweis()}
   `;
+  zeichneInstallHinweis();
 }
