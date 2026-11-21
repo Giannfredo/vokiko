@@ -1,6 +1,6 @@
 import { books, units, vocab, sessions, answers as answerDb, newId } from '../db.js';
 import { esc, SPRACHEN, DEUTSCH_CHIP } from '../utils.js';
-import { buildQuestions, evaluate, countErrors, stars, updateStatus, combo } from '../quiz.js';
+import { buildQuestions, evaluate, countErrors, stars, updateStatus, combo, istAuswahl } from '../quiz.js';
 import { previousSession, compareText, problemWords, isBestleistung } from '../history.js';
 import { canSpeak, speak } from '../speech.js';
 import { kikoSays } from '../ui/kiko.js';
@@ -47,7 +47,10 @@ export async function renderPractice(app, unitId) {
     <h2>Wie willst du üben?</h2>
     <div class="choice-list" id="modus">
       <button class="btn btn-choice" data-modus="auswahl" ${auswahlMoeglich ? '' : 'disabled'}>
-        ${icon('auswahl')} Auswählen – 1 aus 3${auswahlMoeglich ? '' : '<small>ab 3 Vokabeln</small>'}
+        ${icon('auswahl')} Auswählen: ${sprache.chip} → ${DEUTSCH_CHIP}${auswahlMoeglich ? '' : '<small>ab 3 Vokabeln</small>'}
+      </button>
+      <button class="btn btn-choice" data-modus="auswahl-de" ${auswahlMoeglich ? '' : 'disabled'}>
+        ${icon('auswahl')} Auswählen: ${DEUTSCH_CHIP} → ${sprache.chip}${auswahlMoeglich ? '' : '<small>ab 3 Vokabeln</small>'}
       </button>
       <button class="btn btn-choice" data-modus="fremd-de">${icon('stift')} Schreiben: ${sprache.chip} → ${DEUTSCH_CHIP}</button>
       <button class="btn btn-choice" data-modus="de-fremd">${icon('stift')} Schreiben: ${DEUTSCH_CHIP} → ${sprache.chip}</button>
@@ -124,16 +127,17 @@ export async function renderPractice(app, unitId) {
     };
     const bisher = evaluate(questions.slice(0, i), answers); // für die bunten Fortschritts-Kästchen
 
-    const zeigtFremd = q.modus !== 'de-fremd'; // bei DE → Fremd kein Anhören-Knopf, sonst wäre die Lösung verraten
+    const fragtDeutsch = q.modus === 'de-fremd' || q.modus === 'auswahl-de';
+    const zeigtFremd = !fragtDeutsch; // bei DE → Fremd kein Anhören-Knopf, sonst wäre die Lösung verraten
     // Combo-Sticker ab 3 richtigen in Folge; er ploppt nur auf, wenn die Zahl gerade gestiegen ist
     const serie = combo(questions, answers);
     const neu = serie > combo(questions, answers.slice(0, -1));
     const comboSticker = serie >= 3
       ? `<div class="combo ${neu ? 'neu' : ''}" role="status">${icon('blitz')} ${serie}er-Combo!</div>` : '';
 
-    const hinweis = q.modus === 'de-fremd' ? `Wie heißt das auf ${sprache.name}?` : 'Was heißt das auf Deutsch?';
+    const hinweis = fragtDeutsch ? `Wie heißt das auf ${sprache.name}?` : 'Was heißt das auf Deutsch?';
 
-    const antwortTeil = q.modus === 'auswahl'
+    const antwortTeil = istAuswahl(q.modus)
       ? `<div class="choice-list" id="optionen">
           ${q.optionen.map((o, k) => `<button class="btn btn-choice" data-k="${k}">${esc(o)}</button>`).join('')}
         </div>`
@@ -163,7 +167,7 @@ export async function renderPractice(app, unitId) {
       ${antwortTeil}`;
     wireSpeak();
 
-    if (q.modus === 'auswahl') {
+    if (istAuswahl(q.modus)) {
       app.querySelector('#optionen').addEventListener('click', (event) => {
         const knopf = event.target.closest('[data-k]');
         if (knopf) next(q.optionen[knopf.dataset.k], knopf);
@@ -264,7 +268,7 @@ export async function renderPractice(app, unitId) {
       } else {
         inhalt = `<div>Deine Antwort: <s>${deine}</s></div>
                   <div>Richtig: <strong>${esc(e.richtig)}</strong></div>
-                  ${e.modus !== 'auswahl' && e.antwort.trim()
+                  ${!istAuswahl(e.modus) && e.antwort.trim()
                     ? `<button class="fix-btn" data-fix="${i}">${icon('haken')} Doch richtig</button>` : ''}`;
       }
             return `

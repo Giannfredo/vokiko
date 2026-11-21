@@ -58,7 +58,7 @@ Mehrere Bedeutungen in `deutsch` mit `;` getrennt. 3× hintereinander richtig = 
 Problemwort = `fehlerGesamt > 0` und nicht `sicher`. Vergleich „letztes Mal“ = gleiche Lektion **und** gleicher Modus.
 
 ## Datenmodell (sessions / answers)
-`{ id, unitId, unitIds, modus: 'auswahl'|'fremd-de'|'de-fremd', nurProbleme, gestartetAm, dauerSek, anzahl, fehler, fast }`
+`{ id, unitId, unitIds, modus: 'auswahl'|'auswahl-de'|'fremd-de'|'de-fremd', nurProbleme, gestartetAm, dauerSek, anzahl, fehler, fast }`
 `{ id, sessionId, vocabId, gezeigt, eingegeben, ergebnis: 'richtig'|'fast'|'falsch', manuell? }`
 
 ## Roadmap

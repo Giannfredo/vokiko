@@ -1,7 +1,11 @@
 // quiz.js – Abfrage-Logik ohne HTML (Fragen bauen, auswerten, Sterne, Wort-Status)
 
 // Die drei Abfragemodi
-export const MODI = ['auswahl', 'fremd-de', 'de-fremd'];
+// auswahl = 1 aus 3 Fremd → Deutsch, auswahl-de = 1 aus 3 Deutsch → Fremd
+export const MODI = ['auswahl', 'auswahl-de', 'fremd-de', 'de-fremd'];
+
+// Beide „1 aus 3“-Modi (antippen statt schreiben)
+export const istAuswahl = (modus) => modus === 'auswahl' || modus === 'auswahl-de';
 
 // Mischt eine Liste (Fisher-Yates) und gibt eine neue Liste zurück.
 export function shuffle(list) {
@@ -49,7 +53,7 @@ export function checkTyped(eingabe, loesung) {
 /**
  * words:  alle Vokabeln der Lektion (daraus kommen die falschen Antworten bei „1 aus 3“)
  * anzahl: wie viele Fragen (Zahl oder 'alle')
- * modus:  'auswahl' | 'fremd-de' | 'de-fremd'
+ * modus:  'auswahl' | 'auswahl-de' | 'fremd-de' | 'de-fremd'
  * pool:   aus welchen Wörtern gefragt wird (z. B. nur Problemwörter), Standard: alle
  * Ergebnis: [{ vocabId, modus, fremd, frage, richtig, optionen? }]
  */
@@ -60,15 +64,17 @@ export function buildQuestions(words, anzahl = 'alle', modus = 'auswahl', pool =
     if (modus === 'de-fremd') return { ...basis, frage: word.deutsch, richtig: word.fremd };
     if (modus === 'fremd-de') return { ...basis, frage: word.fremd, richtig: word.deutsch };
 
-    // Auswahl „1 aus 3“: falsche Antworten aus derselben Lektion, mit anderer Bedeutung
+    // Auswahl „1 aus 3“: falsche Antworten aus derselben Lektion, mit anderer Bedeutung.
+    // auswahl: Fremdwort fragen, deutsche Antworten; auswahl-de: andersherum.
+    const feld = modus === 'auswahl-de' ? 'fremd' : 'deutsch';
     const falsche = [...new Set(
-      words.filter((w) => w.id !== word.id).map((w) => w.deutsch)
-    )].filter((d) => d !== word.deutsch);
+      words.filter((w) => w.id !== word.id).map((w) => w[feld])
+    )].filter((d) => d !== word[feld]);
     return {
       ...basis,
-      frage: word.fremd,
-      richtig: word.deutsch,
-      optionen: shuffle([word.deutsch, ...shuffle(falsche).slice(0, 2)]),
+      frage: modus === 'auswahl-de' ? word.deutsch : word.fremd,
+      richtig: word[feld],
+      optionen: shuffle([word[feld], ...shuffle(falsche).slice(0, 2)]),
     };
   });
 }
@@ -79,7 +85,7 @@ export function buildQuestions(words, anzahl = 'alle', modus = 'auswahl', pool =
 export function evaluate(questions, answers) {
   return questions.map((q, i) => {
     const antwort = answers[i] ?? '';
-    const ergebnis = q.modus === 'auswahl'
+    const ergebnis = istAuswahl(q.modus)
       ? (antwort === q.richtig ? 'richtig' : 'falsch')
       : checkTyped(antwort, q.richtig);
     return { ...q, antwort, ergebnis, korrekt: ergebnis !== 'falsch' };

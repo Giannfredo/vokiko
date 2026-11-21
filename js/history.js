@@ -1,7 +1,8 @@
 // history.js – Statistik ohne HTML: Vergleich mit dem letzten Mal, Problemwörter, Anzeige-Helfer
 
 export const MODUS_NAMEN = {
-  'auswahl': '1 aus 3',
+  'auswahl': '1 aus 3 → Deutsch',
+  'auswahl-de': '1 aus 3 → Fremdsprache',
   'fremd-de': 'Schreiben → Deutsch',
   'de-fremd': 'Schreiben → Fremdsprache',
 };
