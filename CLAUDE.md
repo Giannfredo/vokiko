@@ -33,6 +33,7 @@ Spezifikation: https://claude.ai/artifact/Ft55XZMdSKqsB6rfLp3tw1
 - `js/screens/history.js` – Historie: Problemwörter, alle Übungen, Export/Import
 - `js/ui/dialog.js` – `confirmDialog()` (eigenes Popup)
 - `js/ui/konfetti.js` – `konfetti({ursprung, verzoegerung})`: Canvas-Konfetti in den App-Farben, aus bei „Bewegung reduzieren“
+- `js/ui/icons.js` – eigene Icons im Sticker-Stil statt Emojis: `icon('name')` (z. B. `ueben`, `kamera`, `laut`, `muell`); Knöpfe nur mit Icon brauchen `aria-label`
 - `js/ui/installieren.js` – Hinweis/Knopf „Als App installieren“ auf der Startseite (nicht in der installierten App)
 - `js/ui/thema.js` – Design-Thema bunt/dunkel (`data-theme="dunkel"` am `<html>`, Knopf in der Kopfleiste)
 - `js/ui/kiko.js` – Kiko als SVG im Manga-Stil (Tusche-Konturen, Glanzaugen): `kikoSvg({stimmung, outfit})`, `kikoSays(html, {stimmung, outfit})`; Stimmungen `normal|freude|denkt|troestet`, Outfit aus `SPRACHEN[x].outfit` (`schal`/`muetze`)
