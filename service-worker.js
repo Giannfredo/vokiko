@@ -41,6 +41,7 @@ const APP_DATEIEN = [
   'js/ui/kiko.js',
   'js/ui/konfetti.js',
   'js/ui/thema.js',
+  'js/ui/toene.js',
 ];
 
 // Installieren: alle App-Dateien frisch vom Server holen und ablegen

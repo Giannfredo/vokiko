@@ -12,7 +12,7 @@ Spezifikation: https://claude.ai/artifact/Ft55XZMdSKqsB6rfLp3tw1
 ## Technik
 - Reines HTML, CSS, JavaScript (ES-Module), kein Framework, kein Build-Schritt.
 - Starten: `python3 server.py` im Projektordner → http://localhost:8000 (wie `http.server`, aber ohne Browser-Cache, damit nie alte und neue Module gemischt werden)
-- Speicher: IndexedDB, **nur** über `js/db.js` (Tabellen `books`, `units`, `vocab`, `sessions`, `answers`; DB_VERSION 2 – neue Tabellen nur in `onupgradeneeded` je nach `oldVersion` anlegen). Einzige Ausnahme: das Design-Thema liegt in `localStorage` (`vokiko-thema`), weil es vor dem ersten Zeichnen bekannt sein muss.
+- Speicher: IndexedDB, **nur** über `js/db.js` (Tabellen `books`, `units`, `vocab`, `sessions`, `answers`; DB_VERSION 2 – neue Tabellen nur in `onupgradeneeded` je nach `oldVersion` anlegen). Einzige Ausnahme: kleine Einstellungen in `localStorage` – Design-Thema (`vokiko-thema`, muss vor dem ersten Zeichnen bekannt sein) und Töne an/aus (`vokiko-ton`).
 - Teilen: Prototyp läuft auf **GitHub Pages** (https://giannfredo.github.io/vokiko/, Repo `Giannfredo/vokiko`, HTTPS, öffentlicher Link für Tester außerhalb des Heimnetzes). Dafür alle Pfade relativ halten (kein führendes `/`), Router nur per `#`-Hash. Repo ist öffentlich → keine Schulbuchfotos oder privaten Daten committen. Veröffentlichen: committen, dann `git push` – nach ca. 1 Min. online. Commits nur mit der noreply-Adresse (ist eingestellt). Fritzbox-Portfreigabe nur als Notlösung (Heimnetz offen, eigenes Zertifikat, Mac muss laufen).
 - Später: PWA, danach Capacitor für iOS/Android (gleicher Code).
 
@@ -35,6 +35,7 @@ Spezifikation: https://claude.ai/artifact/Ft55XZMdSKqsB6rfLp3tw1
 - `js/ui/konfetti.js` – `konfetti({ursprung, verzoegerung})`: Canvas-Konfetti in den App-Farben, aus bei „Bewegung reduzieren“
 - `js/ui/icons.js` – eigene Icons im Sticker-Stil statt Emojis: `icon('name')` (z. B. `ueben`, `kamera`, `laut`, `muell`); Knöpfe nur mit Icon brauchen `aria-label`
 - `js/ui/installieren.js` – Hinweis/Knopf „Als App installieren“ auf der Startseite (nicht in der installierten App)
+- `js/ui/toene.js` – Retro-Töne per Web Audio API (`spieleTon('richtig'|'fast'|'falsch')`), Schalter in der Kopfleiste (`initTonKnopf`)
 - `js/ui/thema.js` – Design-Thema bunt/dunkel (`data-theme="dunkel"` am `<html>`, Knopf in der Kopfleiste)
 - `js/ui/kiko.js` – Kiko als SVG im Manga-Stil (Tusche-Konturen, Glanzaugen): `kikoSvg({stimmung, outfit})`, `kikoSays(html, {stimmung, outfit})`; Stimmungen `normal|freude|denkt|troestet`, Outfit aus `SPRACHEN[x].outfit` (`schal`/`muetze`)
 - `js/screens/*.js` – ein Modul pro Bildschirm, Signatur `async function renderX(app, ...params)`

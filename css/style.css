@@ -535,6 +535,7 @@ a.icon-btn { display: inline-flex; align-items: center; justify-content: center;
 :root[data-theme="dunkel"] .fix-btn { color: var(--braun); }
 
 .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.topbar-knoepfe { display: flex; gap: 10px; }
 .theme-btn {
   min-width: 48px;
   min-height: 48px;
@@ -557,7 +558,9 @@ div.install { padding: 20px; }
 
 /* ---------- Icons (js/ui/icons.js) und Sprach-Chips ---------- */
 /* Linien in Schriftfarbe (currentColor), Flächen in Knallfarben – wie kleine Sticker */
-.ic { width: 1.3em; height: 1.3em; flex: none; vertical-align: -.28em; overflow: visible; }
+/* pointer-events: none → ein Klick aufs Icon trifft den Knopf darunter (sonst wäre event.target das SVG
+   und Knöpfe mit data-…-Attributen würden nicht reagieren) */
+.ic { width: 1.3em; height: 1.3em; flex: none; vertical-align: -.28em; overflow: visible; pointer-events: none; }
 .ic .s { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .ic .s.dick { stroke-width: 2.8; }
 .ic .f { stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; }
@@ -683,3 +686,7 @@ h1 .ic, h2 .ic { color: var(--braun); }
 .segment.richtig { background: var(--gruen); }
 .segment.fast { background: var(--gelb); }
 .segment.falsch { background: var(--rot); }
+
+/* Auswahl DE → Fremd: Antwortkasten + Anhören-Knopf nebeneinander */
+.option-zeile { display: flex; align-items: center; gap: 8px; }
+.option-zeile .btn-choice { flex: 1; }

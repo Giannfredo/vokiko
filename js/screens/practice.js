@@ -6,6 +6,7 @@ import { canSpeak, speak } from '../speech.js';
 import { kikoSays } from '../ui/kiko.js';
 import { konfetti } from '../ui/konfetti.js';
 import { icon } from '../ui/icons.js';
+import { spieleTon } from '../ui/toene.js';
 
 export async function renderPractice(app, unitId) {
   const unit = await units.get(unitId);
@@ -117,6 +118,7 @@ export async function renderPractice(app, unitId) {
       beantwortet = true;
       const { ergebnis } = evaluate([q], [antwort])[0];
       element.classList.add('feedback', ergebnis);
+      spieleTon(ergebnis);
       if (ergebnis === 'richtig') {
         // Funkeln oben rechts am Knopf bzw. am Formular (ein <input> kann nichts enthalten)
         const ort = element.tagName === 'INPUT' ? element.closest('form') : element;
@@ -139,7 +141,13 @@ export async function renderPractice(app, unitId) {
 
     const antwortTeil = istAuswahl(q.modus)
       ? `<div class="choice-list" id="optionen">
-          ${q.optionen.map((o, k) => `<button class="btn btn-choice" data-k="${k}">${esc(o)}</button>`).join('')}
+          ${q.optionen.map((o, k) => q.modus === 'auswahl-de' && canSpeak()
+            // Fremdwörter zur Wahl: Anhören-Knopf NEBEN dem Antwortkasten (antippen = noch nicht antworten)
+            ? `<div class="option-zeile">
+                 <button class="btn btn-choice" data-k="${k}" lang="${book.sprache}">${esc(o)}</button>
+                 ${speakBtn(o)}
+               </div>`
+            : `<button class="btn btn-choice" data-k="${k}">${esc(o)}</button>`).join('')}
         </div>`
       : `<form class="write-form" id="write-form">
           <input name="antwort" aria-label="Deine Antwort" autocomplete="off" autocapitalize="off"

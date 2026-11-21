@@ -25,6 +25,7 @@ const ICONS = {
   speichern: '<path class="f blau" d="M4 5a1 1 0 0 1 1-1h12l3 3v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><rect class="f weiss" x="7" y="13" width="10" height="7"/><rect class="f lila" x="8" y="4" width="7" height="5"/>',
   export: '<path class="f mint" d="M3 14h5l1.5 2.5h5L16 14h5v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path class="s dick" d="M12 3v9.5M8 7l4-4 4 4"/>',
   import: '<path class="f gelb" d="M3 14h5l1.5 2.5h5L16 14h5v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path class="s dick" d="M12 3v9.5M8 9l4 4 4-4"/>',
+  stumm: '<path class="f gelb" d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path class="s dick" d="M16 9.5l5 5M21 9.5l-5 5"/>',
   lupe: '<circle class="f blau" cx="10.5" cy="10.5" r="6.5"/><path class="s dick" d="M15.5 15.5L21 21"/>',
   laut: '<path class="f gelb" d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path class="s" d="M15.5 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/>',
 

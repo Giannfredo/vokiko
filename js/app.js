@@ -7,12 +7,14 @@ import { renderHistory } from './screens/history.js';
 import { renderImport } from './screens/import.js';
 import { kikoSvg, initKikoStreicheln } from './ui/kiko.js';
 import { initThemaKnopf } from './ui/thema.js';
+import { initTonKnopf } from './ui/toene.js';
 import { initInstallieren, istInstalliert } from './ui/installieren.js';
 
 const app = document.getElementById('app');
 // Logo: Kiko + Schriftzug „Vokiko“
 document.querySelector('.logo').innerHTML = `<span class="logo-kiko">${kikoSvg()}</span><span class="logo-wort">Vokiko</span>`;
 initThemaKnopf(document.getElementById('theme-btn'));
+initTonKnopf(document.getElementById('ton-btn'));
 initInstallieren();
 initKikoStreicheln();
 
