@@ -197,6 +197,15 @@ export async function renderPractice(app, unitId) {
 
   let gefeiert = false; // Konfetti nur einmal pro Runde
 
+  // Strahlenkranz hinter Kiko (Manga-Effekt): 12 Keile um die Mitte, bei Bestleistung dreht er sich
+  const STRAHLEN = `<svg class="strahlen" viewBox="-200 -200 400 400" aria-hidden="true"><path d="${
+    Array.from({ length: 12 }, (_, i) => {
+      const a = (i * 30) * Math.PI / 180;
+      const b = (i * 30 + 15) * Math.PI / 180;
+      const p = (w) => `${Math.round(Math.cos(w) * 400)} ${Math.round(Math.sin(w) * 400)}`;
+      return `M0 0L${p(a)}L${p(b)}Z`;
+    }).join('')}"/></svg>`;
+
   // ersteAnzeige: Sterne nur beim ersten Mal einzeln aufploppen lassen (nicht nach „Doch richtig“)
   function drawResults(ergebnisse, session, vorher, ersteAnzeige = false) {
     const fehler = countErrors(ergebnisse);
@@ -212,6 +221,7 @@ export async function renderPractice(app, unitId) {
     const stimmung = s === 3 ? 'freude' : s === 2 ? 'normal' : 'troestet';
     const sterne = [0, 1, 2]
       .map((i) => `<span class="star ${i < s ? 'on' : 'off'}" style="--i:${i}">★</span>`).join('');
+    const best = isBestleistung(vorher, fehler, s);
 
     const rows = ergebnisse.map((e, i) => {
       const deine = e.antwort.trim() ? esc(e.antwort) : '<em>keine Antwort</em>';
@@ -236,11 +246,17 @@ export async function renderPractice(app, unitId) {
     }).join('');
 
     app.innerHTML = `${back}
-      <h1>Geschafft!</h1>
-      <div class="stars ${ersteAnzeige ? 'animiert' : ''}" role="img" aria-label="${s} von 3 Sternen">${sterne}</div>
+      <h1>${best ? 'Bestleistung!' : 'Geschafft!'}</h1>
+      <section class="buehne ${best ? 'best' : ''}">
+        ${STRAHLEN}
+        ${kikoSays(lob, {
+          stimmung,
+          outfit: sprache.outfit,
+          mitte: `<div class="stars ${ersteAnzeige ? 'animiert' : ''}" role="img" aria-label="${s} von 3 Sternen">${sterne}</div>`,
+        })}
+      </section>
       <p class="score">${fehler} Fehler bei ${ergebnisse.length} Wörtern${fast ? ` · ${fast}× fast richtig` : ''}</p>
       <p class="compare">${vergleich}</p>
-      ${kikoSays(lob, { stimmung, outfit: sprache.outfit })}
       <ul class="list" id="results">${rows}</ul>
       <div class="row">
         <button class="btn" id="again">${icon('nochmal')} Nochmal üben</button>
@@ -249,7 +265,7 @@ export async function renderPractice(app, unitId) {
     wireSpeak();
 
     // Konfetti bei Bestleistung – beim ersten Mal erst, wenn die Sterne da sind
-    if (!gefeiert && isBestleistung(vorher, fehler, s)) {
+    if (!gefeiert && best) {
       gefeiert = true;
       konfetti({ ursprung: app.querySelector('.stars'), verzoegerung: ersteAnzeige ? 950 : 0 });
     }

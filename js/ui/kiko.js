@@ -133,11 +133,13 @@ export function kikoSvg({ stimmung = 'normal', outfit = null } = {}) {
 /**
  * Kiko mit Sprechblase daneben.
  * text ist HTML – Texte, die Nutzer eingegeben haben, vorher mit esc() schützen!
+ * mitte: optionales HTML zwischen Kiko und Sprechblase (z. B. die Sterne auf der Ergebnis-Bühne)
  */
-export function kikoSays(text, { stimmung = 'normal', outfit = null } = {}) {
+export function kikoSays(text, { stimmung = 'normal', outfit = null, mitte = '' } = {}) {
   return `
     <div class="kiko-says kiko-${stimmung}" data-stimmung="${stimmung}" data-outfit="${outfit || ''}">
       <button type="button" class="kiko" aria-label="Kiko streicheln">${kikoSvg({ stimmung, outfit })}</button>
+      ${mitte}
       <div class="kiko-bubble"><span class="visually-hidden">Kiko sagt:</span> ${text}</div>
     </div>`;
 }

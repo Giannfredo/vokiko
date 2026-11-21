@@ -20,6 +20,8 @@
   --gelb-hell: #FFE680;
   --lila-hell: #D9CEFF;
   --lila: #B9A6FF;          /* Icons, Sprach-Chip FR */
+  --strahl-grund: #FFF5C2;  /* Ergebnis-Bühne: Hintergrund … */
+  --strahl: #FFE27A;        /* … und Strahlenkranz */
   --stern-aus: #E2D8F5;
   --text-auf-farbe: #1E1530; /* Schrift auf Pink/Mint/Gelb */
   --text-auf-dunkel: #FFFFFF;
@@ -521,6 +523,8 @@ a.icon-btn { display: inline-flex; align-items: center; justify-content: center;
   --gelb-hell: #4A3F1E;
   --pink-hell: #4A2338;
   --mint-hell: #1D4A40;
+  --strahl-grund: #2A2142;
+  --strahl: #3A2E5C;
   --text-auf-farbe: #1E1530;
   --schatten-rgb: 0 0 0;
   --muetze: #4A4262;             /* sonst verschwindet die Mütze im Dunkeln */
@@ -594,3 +598,37 @@ h1 .ic, h2 .ic { color: var(--braun); }
 .sprach-chip.de { background: var(--gelb); }
 .card .cover { font-size: 30px; }
 .card .cover .sprach-chip { padding: 4px 14px; border-width: var(--kante); box-shadow: 3px 3px 0 var(--tusche); }
+
+/* ---------- Ergebnis-Bühne mit Strahlenkranz ---------- */
+.buehne {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 20px;
+  padding: 20px 16px;
+  border: var(--kante) solid var(--tusche);
+  border-radius: 26px;
+  background: var(--strahl-grund);
+  box-shadow: var(--versatz) var(--versatz) 0 var(--tusche);
+}
+.buehne .strahlen {
+  position: absolute;
+  left: 50%;
+  top: 110px;               /* Mitte des Kranzes = ungefähr Kikos Kopf */
+  width: 900px;
+  height: 900px;
+  transform: translate(-50%, -50%);
+  fill: var(--strahl);
+}
+.buehne .kiko-says { position: relative; flex-direction: column; align-items: center; gap: 4px; margin: 0; }
+.buehne .kiko-says .kiko { flex: none; width: 170px; }
+.buehne .stars { margin: -6px 0 4px; text-align: center; }
+.buehne .kiko-says .kiko-bubble { flex: none; align-self: stretch; margin-top: 12px; text-align: center; }
+/* Spitze der Sprechblase zeigt nach oben zu Kiko */
+.buehne .kiko-says .kiko-bubble::before { left: calc(50% - 8px); top: -11px; bottom: auto; transform: rotate(135deg); }
+@media (prefers-reduced-motion: no-preference) {
+  .buehne.best .strahlen { animation: strahlen-drehen 40s linear infinite; }
+}
+@keyframes strahlen-drehen {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
