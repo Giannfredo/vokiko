@@ -20,6 +20,7 @@
   --gelb-hell: #FFE680;
   --lila-hell: #D9CEFF;
   --lila: #B9A6FF;          /* Icons, Sprach-Chip FR */
+  --rot: #FF4D4D;           /* Rückmeldung „falsch“ */
   --strahl-grund: #FFF5C2;  /* Ergebnis-Bühne: Hintergrund … */
   --strahl: #FFE27A;        /* … und Strahlenkranz */
   --stern-aus: #E2D8F5;
@@ -659,3 +660,26 @@ h1 .ic, h2 .ic { color: var(--braun); }
 }
 @keyframes combo-plopp { from { transform: rotate(-4deg) scale(0); } }
 .quiz-fortschritt + .quiz-word { margin-top: 60px; } /* Platz für den Combo-Sticker */
+
+/* ---------- Kurze Rückmeldung nach jeder Antwort (FEEDBACK_MS in practice.js) ---------- */
+.btn-choice { position: relative; }
+.btn-choice.feedback.richtig, .write-form input.feedback.richtig { background: var(--gruen); color: var(--text-auf-farbe); }
+.btn-choice.feedback.falsch,  .write-form input.feedback.falsch  { background: var(--rot); color: var(--text-auf-farbe); }
+.btn-choice.feedback.fast,    .write-form input.feedback.fast    { background: var(--gelb); color: var(--text-auf-farbe); }
+.write-form input.feedback { box-shadow: 0 0 0 4px var(--tusche); }
+.write-form { position: relative; }
+.feedback-funkel { position: absolute; top: -14px; right: -10px; pointer-events: none; }
+.feedback-funkel .ic { width: 30px; height: 30px; }
+@media (prefers-reduced-motion: no-preference) {
+  .btn-choice.feedback, .write-form input.feedback { animation: feedback-puls .2s ease-out; }
+  .feedback-funkel { animation: stern-plopp .2s cubic-bezier(.3, 1.7, .5, 1); }
+}
+@keyframes feedback-puls { 50% { transform: scale(1.03); } }
+
+/* Fortschrittsbalken als Kästchen: eins pro Wort, beantwortete grün / gelb / rot */
+.progress.segmente { display: flex; }
+.segment { flex: 1; }
+.segment + .segment { border-left: 2px solid var(--tusche); }
+.segment.richtig { background: var(--gruen); }
+.segment.fast { background: var(--gelb); }
+.segment.falsch { background: var(--rot); }

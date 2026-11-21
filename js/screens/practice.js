@@ -98,12 +98,31 @@ export async function renderPractice(app, unitId) {
     askQuestion(buildQuestions(words, n === 'alle' ? 'alle' : Number(n), modus, pool), []);
   });
 
-  // ---------- Phase 2: Abfrage (ein Wort pro Bildschirm, ohne Richtig/Falsch) ----------
+  // ---------- Phase 2: Abfrage (ein Wort pro Bildschirm, kurze Rückmeldung richtig/falsch) ----------
+  const FEEDBACK_MS = 500; // so lange leuchtet die Rückmeldung, dann kommt das nächste Wort
+
   function askQuestion(questions, answers) {
     const i = answers.length;
     if (i === questions.length) return showResults(questions, answers);
     const q = questions[i];
-    const next = (antwort) => askQuestion(questions, [...answers, antwort]);
+
+    // Antwort kurz einfärben (grün + Funkeln / gelb / rot), Fortschritts-Kästchen mitfärben, dann weiter.
+    // Die Lösung wird hier nicht verraten – die steht auf der Korrekturseite.
+    let beantwortet = false; // gegen Doppeltippen während der Rückmeldung
+    const next = (antwort, element) => {
+      if (beantwortet) return;
+      beantwortet = true;
+      const { ergebnis } = evaluate([q], [antwort])[0];
+      element.classList.add('feedback', ergebnis);
+      if (ergebnis === 'richtig') {
+        // Funkeln oben rechts am Knopf bzw. am Formular (ein <input> kann nichts enthalten)
+        const ort = element.tagName === 'INPUT' ? element.closest('form') : element;
+        ort.insertAdjacentHTML('beforeend', `<span class="feedback-funkel">${icon('funkel')}</span>`);
+      }
+      app.querySelector(`.segment[data-i="${i}"]`)?.classList.add(ergebnis);
+      setTimeout(() => askQuestion(questions, [...answers, antwort]), FEEDBACK_MS);
+    };
+    const bisher = evaluate(questions.slice(0, i), answers); // für die bunten Fortschritts-Kästchen
 
     const zeigtFremd = q.modus !== 'de-fremd'; // bei DE → Fremd kein Anhören-Knopf, sonst wäre die Lösung verraten
     // Combo-Sticker ab 3 richtigen in Folge; er ploppt nur auf, wenn die Zahl gerade gestiegen ist
@@ -134,7 +153,9 @@ export async function renderPractice(app, unitId) {
         <a class="back" href="#/lektion/${unitId}">${icon('x')} Abbrechen</a>
       </div>
       <div class="quiz-fortschritt">
-        <div class="progress"><div style="width:${(i / questions.length) * 100}%"></div></div>
+        <div class="progress segmente" role="img" aria-label="Wort ${i + 1} von ${questions.length}">${
+          questions.map((_, k) => `<span class="segment ${bisher[k]?.ergebnis || ''}" data-i="${k}"></span>`).join('')
+        }</div>
         ${comboSticker}
       </div>
       <div class="quiz-word">${esc(q.frage)} ${zeigtFremd ? speakBtn(q.fremd) : ''}</div>
@@ -144,8 +165,8 @@ export async function renderPractice(app, unitId) {
 
     if (q.modus === 'auswahl') {
       app.querySelector('#optionen').addEventListener('click', (event) => {
-        const k = event.target.closest('[data-k]')?.dataset.k;
-        if (k !== undefined) next(q.optionen[k]);
+        const knopf = event.target.closest('[data-k]');
+        if (knopf) next(q.optionen[knopf.dataset.k], knopf);
       });
       return;
     }
@@ -155,7 +176,7 @@ export async function renderPractice(app, unitId) {
     input.focus();
     form.addEventListener('submit', (event) => {
       event.preventDefault();
-      next(input.value);
+      next(input.value, input);
     });
     // Akzent-Knopf: Zeichen an der Cursor-Position einfügen
     form.querySelector('.accent-bar')?.addEventListener('click', (event) => {
