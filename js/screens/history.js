@@ -3,6 +3,7 @@ import { esc, SPRACHEN } from '../utils.js';
 import { confirmDialog } from '../ui/dialog.js';
 import { stars } from '../quiz.js';
 import { MODUS_NAMEN, problemWords, formatDauer, formatDatum } from '../history.js';
+import { icon } from '../ui/icons.js';
 
 export async function renderHistory(app) {
   // Alles laden und Nachschlage-Tabellen bauen: id → Lektion, id → Buch
@@ -11,7 +12,7 @@ export async function renderHistory(app) {
   const label = (unitId) => {
     const unit = unitById.get(unitId);
     const book = unit && bookById.get(unit.bookId);
-    return book ? `${SPRACHEN[book.sprache].flagge} ${esc(book.titel)} · ${esc(unit.name)}` : 'Gelöschte Lektion';
+    return book ? `${SPRACHEN[book.sprache].chip} ${esc(book.titel)} · ${esc(unit.name)}` : 'Gelöschte Lektion';
   };
 
   const liste = await sessions.all();
@@ -25,7 +26,7 @@ export async function renderHistory(app) {
           <strong>${label(s.unitId)}</strong>
           <span class="stars-small">${'★'.repeat(st)}<span class="off">${'★'.repeat(3 - st)}</span></span>
         </div>
-        <small>${formatDatum(s.gestartetAm)} · ${MODUS_NAMEN[s.modus]}${s.nurProbleme ? ' · 🎯 Problemwörter' : ''} · ${formatDauer(s.dauerSek)}</small>
+        <small>${formatDatum(s.gestartetAm)} · ${MODUS_NAMEN[s.modus]}${s.nurProbleme ? ` · ${icon('ziel')} Problemwörter` : ''} · ${formatDauer(s.dauerSek)}</small>
         <div>${s.fehler} Fehler bei ${s.anzahl} Wörtern${s.fast ? ` · ${s.fast}× fast richtig` : ''}</div>
       </li>`;
   }).join('');
@@ -38,14 +39,14 @@ export async function renderHistory(app) {
         <small>${label(w.unitId)}</small>
       </div>
       <span class="badge">${w.fehlerGesamt}× falsch</span>
-      <a class="icon-btn" href="#/ueben/${w.unitId}" title="Diese Lektion üben">▶️</a>
+      <a class="icon-btn" href="#/ueben/${w.unitId}" title="Diese Lektion üben" aria-label="Diese Lektion üben">${icon('ueben')}</a>
     </li>`).join('');
 
   app.innerHTML = `
-    <a class="back" href="#/start">← Start</a>
-    <h1>📊 Historie</h1>
+    <a class="back" href="#/start">${icon('zurueck')} Start</a>
+    <h1>${icon('historie')} Historie</h1>
 
-    <h2>🎯 Problemwörter</h2>
+    <h2>${icon('ziel')} Problemwörter</h2>
     ${probleme.length
       ? `<ul class="list">${problemRows}</ul>`
       : '<p class="empty">Keine Problemwörter – super!</p>'}
@@ -56,11 +57,11 @@ export async function renderHistory(app) {
       : '<p class="empty">Noch keine Übungen gemacht.</p>'}
 
     <div class="form">
-      <h2>💾 Sicherung</h2>
+      <h2>${icon('speichern')} Sicherung</h2>
       <p>Speichere alle Bücher, Vokabeln und Übungen als Datei – z. B. für ein neues Gerät.</p>
       <div class="row">
-        <button class="btn" id="export">📤 Exportieren</button>
-        <label class="btn btn-secondary file-btn">📥 Importieren
+        <button class="btn" id="export">${icon('export')} Exportieren</button>
+        <label class="btn btn-secondary file-btn">${icon('import')} Importieren
           <input type="file" id="import" accept=".json,application/json" hidden>
         </label>
       </div>
@@ -103,12 +104,12 @@ export async function renderHistory(app) {
       text: `${data.books.length} Bücher, ${data.vocab.length} Vokabeln und ${(data.sessions || []).length} Übungen. `
         + 'Einträge, die es schon gibt, werden mit dem Stand aus der Datei überschrieben.',
       okLabel: 'Importieren',
-      icon: '📥',
+      icon: 'import',
     });
     if (!ok) return;
     await importAll(data);
     await renderHistory(app);
-    app.querySelector('#msg').textContent = 'Import fertig! ✅';
+    app.querySelector('#msg').textContent = 'Import fertig!';
     app.querySelector('#msg').hidden = false;
   });
 }

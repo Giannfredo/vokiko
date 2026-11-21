@@ -6,20 +6,20 @@
   <title>Vokiko</title>
   <!-- PWA: Steckbrief, Icon und Farbe der Statusleiste (hier feste Werte nötig, CSS-Variablen gehen nicht) -->
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#C2502E">
+  <meta name="theme-color" content="#F4EFFF">
   <link rel="icon" href="icons/icon-192.png" type="image/png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Vokiko">
   <!-- Gespeichertes Design-Thema sofort setzen (vor dem Zeichnen), siehe js/ui/thema.js -->
   <script>try { if (localStorage.getItem('vokiko-thema') === 'dunkel') document.documentElement.dataset.theme = 'dunkel'; } catch (e) {}</script>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <header class="topbar">
-    <a href="#/start" class="logo">🐾 Vokiko</a>
-    <button type="button" class="theme-btn" id="theme-btn">🌙</button>
+    <a href="#/start" class="logo">Vokiko</a>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="Dunkles Design"></button>
   </header>
   <main id="app"></main>
   <script type="module" src="js/app.js"></script>

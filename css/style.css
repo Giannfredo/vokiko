@@ -1,74 +1,125 @@
-/* ---------- Schritt 1: Farben (helles Thema „bunt“) ---------- */
+/* ---------- Farben (helles Thema „bunt“) – Manga/K-Pop-Look ---------- */
+/* Sticker-Stil: dicke Tusche-Ränder, harte Schatten ohne Unschärfe, kräftige Flächenfarben.
+   Alle Farben nur hier (und im dunklen Thema unten) – nirgends sonst feste Farbwerte. */
 :root {
-  --rost: #C2502E;
-  --orange: #F08A3C;
-  --creme: #FFF6EC;
-  --braun: #4A2C1D;
-  --gruen: #4CAF7A;
+  --creme: #F4EFFF;        /* Seitenhintergrund (Lila-Weiß) */
+  --punkte: #DCCFFF;       /* Rasterpunkte im Hintergrund (wie im Manga-Heft) */
+  --braun: #1E1530;        /* Schrift */
+  --tusche: #1E1530;       /* Ränder und harte Schatten */
   --karte: #FFFFFF;
-  --stern-aus: #EAD7C5;
-  --gelb: #F7C948;
-  --text-auf-farbe: #FFFFFF;
   --feld: #FFFFFF;
-  --rahmen: #EAD7C5;
-  --balken: #F3E2D3;
-  --rost-dunkel: #8E3A20;
-  --schatten-rgb: 74 44 29;
-  --rost-rgb: 194 80 46;
-  --orange-rgb: 240 138 60;
-  /* Kiko */
-  --fell: #C2502E;
-  --fell-dunkel: #7A2E17;
+  --rahmen: #1E1530;       /* Rand von Eingabefeldern */
+  --leise: #5A4E70;        /* Nebentexte, Überschriften in Großbuchstaben */
+  --pink: #FF4F8B;         /* Hauptknöpfe, Fortschritt */
+  --pink-rgb: 255 79 139;
+  --pink-hell: #FFD6E6;
+  --akzent: #C41D60;       /* kräftiges Pink für Text (Zurück-Links, Warnungen) – gut lesbar */
+  --gruen: #2FD3A7;        /* richtig, „sicher“ */
+  --mint-hell: #A8F0DA;
+  --gelb: #FFD23F;         /* Sterne, „fast richtig“ */
+  --gelb-hell: #FFE680;
+  --lila-hell: #D9CEFF;
+  --lila: #B9A6FF;          /* Icons, Sprach-Chip FR */
+  --stern-aus: #E2D8F5;
+  --text-auf-farbe: #1E1530; /* Schrift auf Pink/Mint/Gelb */
+  --text-auf-dunkel: #FFFFFF;
+  --balken: #FFFFFF;
+  --schatten-rgb: 30 21 48;
+  --radius: 18px;
+  --kante: 3px;            /* Randstärke */
+  --versatz: 4px;          /* Schatten-Versatz */
+  /* Kiko (bleibt auch im dunklen Thema gleich) */
+  --fell: #EE6A2C;
+  --fell-dunkel: #8A3216;
+  --fell-hell: #FFF3E6;
+  --k-tusche: #1E1530;
+  --iris: #B4561F;
   --weiss: #FFFFFF;
-  --dunkel: #2B1A12;
+  --tropfen: #7FD4FF;
   --uk-blau: #1F3A8A;
   --uk-rot: #C8102E;
   --muetze: #2E2A3A;
-  --radius: 18px;
+  /* Schriften */
+  --schrift: 'M PLUS Rounded 1c', system-ui, sans-serif;
+  --schrift-titel: 'Dela Gothic One', 'M PLUS Rounded 1c', system-ui, sans-serif;
 }
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
-  font-family: 'Nunito', system-ui, sans-serif;
+  font-family: var(--schrift);
+  font-weight: 500;
   font-size: 18px;
-  background: var(--creme);
+  background-color: var(--creme);
+  background-image: radial-gradient(var(--punkte) 1.6px, transparent 1.8px);
+  background-size: 14px 14px;
   color: var(--braun);
 }
 
-.topbar { background: var(--rost); padding: 12px 20px; }
-.logo { color: var(--text-auf-farbe); font-weight: 800; font-size: 24px; text-decoration: none; }
+.topbar {
+  background: var(--karte);
+  border-bottom: var(--kante) solid var(--tusche);
+  padding: 8px 16px;
+}
+.logo { color: var(--braun); font-family: var(--schrift-titel); font-size: 26px; text-decoration: none; }
 
 main { max-width: 720px; margin: 0 auto; padding: 24px 16px; }
-h1 { font-weight: 800; margin-top: 0; }
+h1, h2 { font-family: var(--schrift-titel); font-weight: 400; letter-spacing: .3px; }
+/* 80er-Spieltitel-Effekt: bunte Schrift, feine Tusche-Kontur, kleiner harter Schatten */
+h1 { margin-top: 0; font-size: 30px; line-height: 1.2; color: var(--pink); }
+h2 { color: var(--gruen); }
+/* Abwechselnde Farben (setzt app.js per data-farbe) */
+h1[data-farbe="pink"], h2[data-farbe="pink"] { color: var(--pink); }
+h1[data-farbe="mint"], h2[data-farbe="mint"] { color: var(--gruen); }
+h1[data-farbe="gelb"], h2[data-farbe="gelb"] { color: var(--gelb); }
+h1[data-farbe="blau"], h2[data-farbe="blau"] { color: var(--tropfen); }
+h1[data-farbe="lila"], h2[data-farbe="lila"] { color: var(--lila); }
+h1, h2, .score {
+  -webkit-text-stroke: 1px var(--tusche);
+  paint-order: stroke fill;
+  text-shadow: 2px 2px 0 var(--tusche);
+}
+h3 { font-weight: 800; }
+
+/* Gemeinsamer Sticker-Look für Karten */
+.kiko-bubble, .card, .form, .popup, .install, .vocab, .result, .review-row {
+  border: var(--kante) solid var(--tusche);
+  box-shadow: var(--versatz) var(--versatz) 0 var(--tusche);
+}
 
 .kiko-bubble {
   background: var(--karte);
   border-radius: var(--radius);
-  padding: 16px 20px;
+  padding: 14px 18px;
   margin-bottom: 24px;
-  box-shadow: 0 4px 0 rgb(var(--schatten-rgb) / .12);
+  font-weight: 700;
 }
 
 .btn {
-  display: inline-block;
-  min-height: 48px;
-  padding: 14px 24px;
-  border: none;
-  border-radius: var(--radius);
-  background: var(--orange);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 52px;
+  padding: 13px 22px;
+  border: var(--kante) solid var(--tusche);
+  border-radius: 16px;
+  background: var(--pink);
   color: var(--text-auf-farbe);
   font: inherit;
   font-weight: 800;
   text-decoration: none;
   cursor: pointer;
-  box-shadow: 0 4px 0 var(--rost);
+  box-shadow: var(--versatz) var(--versatz) 0 var(--tusche);
+  transition: transform .06s, box-shadow .06s;
 }
-.btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--rost); }
+/* Eindrücken: Knopf rutscht in seinen Schatten */
+.btn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--tusche); }
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; }
-.list { list-style: none; padding: 0; display: grid; gap: 12px; }
+.list { list-style: none; padding: 0; display: grid; gap: 14px; }
 
 .card {
   display: block;
@@ -77,18 +128,26 @@ h1 { font-weight: 800; margin-top: 0; }
   padding: 16px;
   color: inherit;
   text-decoration: none;
-  box-shadow: 0 4px 0 rgb(var(--schatten-rgb) / .12);
+  transition: transform .06s, box-shadow .06s;
 }
+a.card:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--tusche); }
 .card .cover { font-size: 48px; }
 .card h3 { margin: 8px 0 4px; }
-.card small { opacity: .7; }
+.card small { color: var(--leise); font-weight: 700; }
 
-.back { display: inline-block; margin-bottom: 16px; color: var(--rost); font-weight: 700; text-decoration: none; }
+.back { display: inline-flex; align-items: center; min-height: 48px; margin-bottom: 8px; color: var(--akzent); font-weight: 800; text-decoration: none; }
 
-.progress { height: 10px; margin-top: 8px; background: var(--balken); border-radius: 99px; overflow: hidden; }
+.progress {
+  height: 16px;
+  margin-top: 8px;
+  background: var(--balken);
+  border: var(--kante) solid var(--tusche);
+  border-radius: 10px;
+  overflow: hidden;
+}
 .progress > div { height: 100%; background: var(--gruen); }
 
-/* ---------- Schritt 2: Formulare und Vokabelliste ---------- */
+/* ---------- Formulare und Vokabelliste ---------- */
 .form {
   display: grid;
   gap: 12px;
@@ -96,21 +155,20 @@ h1 { font-weight: 800; margin-top: 0; }
   padding: 20px;
   background: var(--karte);
   border-radius: var(--radius);
-  box-shadow: 0 4px 0 rgb(var(--schatten-rgb) / .12);
 }
 .form h2 { margin: 0; }
-.form label { display: grid; gap: 4px; font-weight: 700; font-size: 16px; }
+.form label { display: grid; gap: 4px; font-weight: 800; font-size: 16px; }
 
 input, select {
   min-height: 48px;
   padding: 10px 12px;
-  border: 2px solid var(--rahmen);
+  border: var(--kante) solid var(--rahmen);
   border-radius: 12px;
   background: var(--feld);
   color: inherit;
   font: inherit;
 }
-input:focus, select:focus { outline: none; border-color: var(--orange); }
+input:focus, select:focus { outline: none; box-shadow: 0 0 0 4px rgb(var(--pink-rgb) / .45); }
 
 .row { display: flex; flex-wrap: wrap; gap: 12px; }
 .row > * { flex: 1 1 160px; }
@@ -119,121 +177,134 @@ input:focus, select:focus { outline: none; border-color: var(--orange); }
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 16px;
+  padding: 10px 14px;
   background: var(--karte);
   border-radius: 14px;
+  box-shadow: 3px 3px 0 var(--tusche);
 }
 .vocab .words { flex: 1; }
 .vocab .fremd { font-weight: 800; }
-.vocab .deutsch { opacity: .8; }
+.vocab .deutsch { color: var(--leise); }
 
 .icon-btn {
-  min-width: 44px;
-  min-height: 44px;
+  min-width: 48px;
+  min-height: 48px;
   border: none;
   border-radius: 12px;
   background: none;
+  color: inherit;
   font-size: 22px;
   cursor: pointer;
 }
 .icon-btn:hover { background: var(--creme); }
 
-.btn-secondary { background: var(--karte); color: var(--braun); box-shadow: 0 4px 0 rgb(var(--schatten-rgb) / .2); }
-.btn-danger { background: var(--karte); color: var(--rost); box-shadow: 0 4px 0 rgb(var(--rost-rgb) / .3); }
-.empty { opacity: .7; font-style: italic; }
+.btn-secondary { background: var(--karte); color: var(--braun); }
+.btn-danger { background: var(--karte); color: var(--akzent); }
+.empty { color: var(--leise); font-style: italic; }
 [hidden] { display: none !important; }
 
 /* ---------- Popup (dialog.js) ---------- */
 .popup {
   width: min(90vw, 400px);
   padding: 28px 24px 24px;
-  border: none;
   border-radius: 24px;
   background: var(--karte);
   color: var(--braun);
   text-align: center;
-  box-shadow: 0 8px 0 rgb(var(--schatten-rgb) / .15), 0 20px 50px rgb(var(--schatten-rgb) / .25);
+  box-shadow: 6px 6px 0 var(--tusche);
 }
 .popup[open] { animation: popup-in .2s ease-out; }
-.popup::backdrop { background: rgb(var(--schatten-rgb) / .45); }
+.popup::backdrop { background: rgb(var(--schatten-rgb) / .55); }
 .popup-icon { font-size: 48px; line-height: 1; }
 .popup h2 { margin: 12px 0 8px; }
-.popup p { margin: 0 0 20px; opacity: .85; }
+.popup p { margin: 0 0 20px; }
 .popup-buttons { display: flex; gap: 12px; }
 .popup-buttons .btn { flex: 1; }
-.btn-danger-strong { background: var(--rost); box-shadow: 0 4px 0 var(--rost-dunkel); }
+.btn-danger-strong { background: var(--akzent); color: var(--text-auf-dunkel); }
 
 @keyframes popup-in {
   from { transform: scale(.85); opacity: 0; }
   to   { transform: scale(1);   opacity: 1; }
 }
-/* ---------- Schritt 3: Üben (1 aus 3) und Korrekturseite ---------- */
-.choice-list { display: grid; gap: 12px; margin: 16px 0; }
+/* ---------- Üben (1 aus 3) und Korrekturseite ---------- */
+.choice-list { display: grid; gap: 14px; margin: 16px 0; }
 .btn-choice {
   background: var(--karte);
   color: var(--braun);
   font-size: 20px;
   text-align: center;
-  box-shadow: 0 4px 0 rgb(var(--schatten-rgb) / .2);
 }
-.btn-choice:hover { outline: 3px solid var(--orange); }
+.btn-choice small { flex-basis: 100%; }
+.btn-choice:hover { background: var(--lila-hell); }
 
-.quiz-top { display: flex; justify-content: space-between; align-items: center; font-weight: 700; }
+.quiz-top { display: flex; justify-content: space-between; align-items: center; font-weight: 800; }
 .quiz-top .back { margin: 0; }
-.quiz-word { margin: 40px 0 8px; font-size: 36px; font-weight: 800; text-align: center; overflow-wrap: anywhere; }
-.quiz-hint { text-align: center; opacity: .7; margin-top: 0; }
+.quiz-word {
+  margin: 32px 0 8px;
+  font-family: var(--schrift-titel);
+  font-weight: 400;
+  font-size: 38px;
+  line-height: 1.2;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.quiz-hint { text-align: center; color: var(--leise); font-weight: 700; margin-top: 0; }
 
-.stars { font-size: 48px; color: var(--orange); letter-spacing: 6px; }
+/* Sterne: gelb mit Tusche-Kontur */
+.stars { font-size: 56px; color: var(--gelb); letter-spacing: 6px; -webkit-text-stroke: 2.5px var(--tusche); paint-order: stroke fill; }
 .stars .star { display: inline-block; }
+.stars .star:nth-child(2) { transform: translateY(-8px) scale(1.15); }
 .stars .off { color: var(--stern-aus); }
-.score { font-size: 22px; font-weight: 800; margin-top: 0; }
+.score { font-family: var(--schrift-titel); font-weight: 400; font-size: 24px; margin-top: 0; color: var(--gelb); }
 
-.result { display: flex; gap: 12px; padding: 12px 16px; background: var(--karte); border-radius: 14px; border-left: 6px solid var(--gruen); }
+.result { display: flex; gap: 12px; padding: 12px 16px; background: var(--karte); border-radius: 14px; border-left-width: 12px; border-left-color: var(--gruen); box-shadow: 3px 3px 0 var(--tusche); }
 
 .result .fremd { font-weight: 800; }
-.result s { opacity: .7; }
+.result s { color: var(--leise); }
 
-/* ---------- Schritt 4: Schreib-Modi, Aussprache ---------- */
-.btn-choice.selected { outline: 3px solid var(--orange); background: var(--creme); }
-.btn-choice:disabled { opacity: .5; cursor: not-allowed; outline: none; }
-.btn-choice small { display: block; font-weight: 400; font-size: 14px; }
+/* ---------- Schreib-Modi, Aussprache ---------- */
+.btn-choice.selected { background: var(--gelb-hell); }
+.btn-choice:disabled { opacity: .5; cursor: not-allowed; }
+.btn-choice small { display: block; font-weight: 500; font-size: 14px; }
 
 .write-form { display: grid; gap: 12px; margin: 16px 0; }
 .write-form input { font-size: 24px; text-align: center; }
-.accent-bar { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.accent-bar { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
 .accent-btn {
   min-width: 48px;
   min-height: 48px;
-  border: 2px solid var(--rahmen);
+  border: var(--kante) solid var(--tusche);
   border-radius: 12px;
   background: var(--karte);
   color: var(--braun);
   font: inherit;
   font-size: 20px;
+  font-weight: 800;
   cursor: pointer;
+  box-shadow: 2px 2px 0 var(--tusche);
 }
-.accent-btn:active { background: var(--creme); }
+.accent-btn:active { transform: translate(2px, 2px); box-shadow: none; }
 
 .quiz-word .speak-btn { vertical-align: middle; }
 
 .result { align-items: flex-start; }
 .result-body { flex: 1; }
-.result.fast { border-left-color: var(--orange); }
-.result.falsch { border-left-color: var(--rost); }
+.result.fast { border-left-color: var(--gelb); }
+.result.falsch { border-left-color: var(--pink); }
 .fix-btn {
   margin-top: 8px;
   min-height: 48px;
   padding: 8px 16px;
-  border: 2px solid var(--gruen);
+  border: var(--kante) solid var(--tusche);
   border-radius: 12px;
-  background: none;
-  color: var(--braun);
+  background: var(--mint-hell);
+  color: var(--text-auf-farbe);
   font: inherit;
-  font-weight: 700;
+  font-weight: 800;
   cursor: pointer;
 }
 
-/* ---------- Schritt 5: Historie, Problemwörter, Sicherung ---------- */
+/* ---------- Historie, Problemwörter, Sicherung ---------- */
 .row > .btn { text-align: center; }
 
 .toggle {
@@ -242,23 +313,24 @@ input:focus, select:focus { outline: none; border-color: var(--orange); }
   gap: 12px;
   min-height: 48px;
   margin: 8px 0;
-  font-weight: 700;
+  font-weight: 800;
   cursor: pointer;
 }
-.toggle input { width: 24px; height: 24px; min-height: 0; accent-color: var(--orange); }
+.toggle input { width: 24px; height: 24px; min-height: 0; accent-color: var(--pink); }
 
-.compare { font-weight: 700; color: var(--rost); }
+.compare { font-weight: 800; color: var(--akzent); }
 
 .session { display: grid; gap: 4px; }
 .session-head { display: flex; justify-content: space-between; gap: 8px; }
-.stars-small { color: var(--orange); white-space: nowrap; }
+.stars-small { color: var(--gelb); white-space: nowrap; -webkit-text-stroke: 1px var(--tusche); paint-order: stroke fill; }
 .stars-small .off { color: var(--stern-aus); }
 
 .badge {
-  padding: 4px 10px;
+  padding: 3px 10px;
+  border: 2px solid var(--tusche);
   border-radius: 99px;
-  background: var(--creme);
-  color: var(--rost);
+  background: var(--gelb);
+  color: var(--text-auf-farbe);
   font-size: 14px;
   font-weight: 800;
   white-space: nowrap;
@@ -266,36 +338,38 @@ input:focus, select:focus { outline: none; border-color: var(--orange); }
 a.icon-btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
 
 .file-btn { text-align: center; }
-.notice { margin: 0; padding: 12px 16px; border-radius: 12px; background: var(--creme); font-weight: 700; }
+.notice { margin: 0; padding: 12px 16px; border: var(--kante) solid var(--tusche); border-radius: 12px; background: var(--gelb-hell); color: var(--text-auf-farbe); font-weight: 800; }
 
-/* ---------- Schritt 6: Foto-Import und Prüfansicht ---------- */
+/* ---------- Foto-Import und Prüfansicht ---------- */
 
-.review-head { display: grid; grid-template-columns: 1fr 1fr 44px; gap: 8px; margin-top: 16px; font-weight: 800; font-size: 16px; }
+.review-head { display: grid; grid-template-columns: 1fr 1fr 48px; gap: 8px; margin-top: 16px; font-weight: 800; font-size: 16px; }
 .review-row {
   display: grid;
-  grid-template-columns: 1fr 1fr 44px;
+  grid-template-columns: 1fr 1fr 48px;
   gap: 8px;
   align-items: center;
   padding: 8px;
   background: var(--karte);
   border-radius: 14px;
-  border-left: 6px solid var(--gruen);
+  border-left-width: 12px;
+  border-left-color: var(--gruen);
+  box-shadow: 3px 3px 0 var(--tusche);
 }
-.review-row.flag { border-left-color: var(--orange); }
+.review-row.flag { border-left-color: var(--gelb); }
 .review-row input { min-width: 0; width: 100%; }
-.flag-text { grid-column: 1 / -1; color: var(--rost); font-weight: 700; }
+.flag-text { grid-column: 1 / -1; color: var(--akzent); font-weight: 800; }
 .flag-text:empty { display: none; }
 
 .raw { margin: 16px 0; }
-.raw summary { min-height: 48px; display: flex; align-items: center; cursor: pointer; font-weight: 700; }
-.raw pre { white-space: pre-wrap; padding: 12px; background: var(--karte); border-radius: 12px; font-size: 14px; }
+.raw summary { min-height: 48px; display: flex; align-items: center; cursor: pointer; font-weight: 800; }
+.raw pre { white-space: pre-wrap; padding: 12px; background: var(--karte); border: var(--kante) solid var(--tusche); border-radius: 12px; font-size: 14px; }
 .btn:disabled { opacity: .5; cursor: not-allowed; }
 
 /* Foto vorbereiten */
 .preview-box { display: flex; justify-content: center; margin: 16px 0; }
-.preview-box canvas { max-width: 100%; max-height: 55vh; border-radius: 12px; box-shadow: 0 4px 0 rgb(var(--schatten-rgb) / .12); }
-.btn.selected { outline: 3px solid var(--orange); }
-.review-row .beispiel { grid-column: 1 / 3; min-height: 40px; font-size: 15px; opacity: .8; }
+.preview-box canvas { max-width: 100%; max-height: 55vh; border: var(--kante) solid var(--tusche); border-radius: 12px; box-shadow: var(--versatz) var(--versatz) 0 var(--tusche); }
+.btn.selected { background: var(--gelb); }
+.review-row .beispiel { grid-column: 1 / 3; min-height: 40px; font-size: 15px; color: var(--leise); }
 
 /* Bereiche markieren */
 .crop-area { position: relative; display: inline-block; line-height: 0; }
@@ -303,9 +377,9 @@ a.icon-btn { display: inline-flex; align-items: center; justify-content: center;
 .crop-layer { position: absolute; inset: 0; touch-action: none; cursor: crosshair; }
 .crop-box {
   position: absolute;
-  border: 3px solid var(--orange);
+  border: 3px solid var(--pink);
   border-radius: 6px;
-  background: rgb(var(--orange-rgb) / .15);
+  background: rgb(var(--pink-rgb) / .15);
 }
 .crop-box.draft { border-style: dashed; }
 .crop-nr {
@@ -313,8 +387,9 @@ a.icon-btn { display: inline-flex; align-items: center; justify-content: center;
   top: 4px;
   left: 4px;
   padding: 2px 8px;
+  border: 2px solid var(--tusche);
   border-radius: 99px;
-  background: var(--orange);
+  background: var(--pink);
   color: var(--text-auf-farbe);
   font-size: 14px;
   font-weight: 800;
@@ -326,20 +401,20 @@ a.icon-btn { display: inline-flex; align-items: center; justify-content: center;
   right: -24px;
   width: 48px;
   height: 48px;
-  border: none;
+  border: var(--kante) solid var(--tusche);
   border-radius: 50%;
-  background: var(--rost);
-  color: var(--text-auf-farbe);
+  background: var(--akzent);
+  color: var(--text-auf-dunkel);
   font: inherit;
   font-weight: 800;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgb(var(--schatten-rgb) / .3);
+  box-shadow: 2px 2px 0 var(--tusche);
 }
 .btn-start { width: 100%; margin-top: 8px; }
 .preview-strip { flex-wrap: wrap; gap: 8px; }
 .preview-strip canvas { max-height: 30vh; }
 
-/* ---------- Schritt 7: Kiko ---------- */
+/* ---------- Kiko ---------- */
 .visually-hidden {
   position: absolute; width: 1px; height: 1px; overflow: hidden;
   clip: rect(0 0 0 0); white-space: nowrap;
@@ -347,39 +422,59 @@ a.icon-btn { display: inline-flex; align-items: center; justify-content: center;
 
 .kiko-svg { display: block; width: 100%; height: auto; overflow: visible; }
 .k-fell { fill: var(--fell); }
-.k-weiss { fill: var(--weiss); }
-.k-dunkel { fill: var(--dunkel); }
-.k-ohr-rand { stroke: var(--weiss); stroke-width: 3; stroke-linejoin: round; }
-.k-ohr-innen { fill: var(--fell-dunkel); }
-.k-traene { fill: none; stroke: var(--fell-dunkel); stroke-width: 4; stroke-linecap: round; }
-.k-linie { fill: none; stroke: var(--dunkel); stroke-width: 2.5; stroke-linecap: round; }
-.k-linie.dick { stroke-width: 3.5; }
-.k-backe { fill: var(--orange); opacity: .55; }
-.k-zunge { fill: var(--orange); }
+.k-hell { fill: var(--fell-hell); }
+.k-tusche { fill: var(--k-tusche); }
+.k-iris { fill: var(--iris); }
+.k-glanz { fill: var(--weiss); }
+.k-umriss { stroke: var(--k-tusche); stroke-width: 3.5; stroke-linejoin: round; }
+.k-umriss-duenn { stroke: var(--k-tusche); stroke-width: 1.8; stroke-linejoin: round; }
+.k-strich { fill: none; stroke: var(--k-tusche); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.k-strich.dick { stroke-width: 6; }
+.k-rouge { fill: none; stroke: var(--pink); stroke-width: 3; stroke-linecap: round; }
+.k-zunge { fill: var(--pink); }
+.k-funkel { fill: var(--gelb); stroke: var(--k-tusche); stroke-width: 2.5; stroke-linejoin: round; }
+.k-funkel.blau { fill: var(--tropfen); }
+.k-tropfen { fill: var(--tropfen); stroke: var(--k-tusche); stroke-width: 2.5; stroke-linejoin: round; }
+.k-traenen-linie { fill: none; stroke: var(--tropfen); stroke-width: 3; stroke-linecap: round; }
+.k-blase { fill: var(--weiss); stroke: var(--k-tusche); stroke-width: 2; }
+.k-herz { fill: var(--pink); stroke: var(--k-tusche); stroke-width: 2.5; stroke-linejoin: round; }
 .k-uk-blau { fill: var(--uk-blau); }
 .k-uk-weiss { stroke: var(--weiss); fill: none; }
 .k-uk-rot { stroke: var(--uk-rot); fill: none; }
 .k-weiss-linie { fill: none; stroke: var(--weiss); stroke-width: 6; }
 .k-uk-rot-linie { fill: none; stroke: var(--uk-rot); stroke-width: 3; }
 .k-muetze { fill: var(--muetze); }
-.k-schwanz-fell { fill: none; stroke: var(--fell); stroke-width: 23; stroke-linecap: round; }
-.k-schwanz-ringe { fill: none; stroke: var(--fell-dunkel); stroke-width: 23; stroke-dasharray: 7 9; stroke-dashoffset: -30; }
-.k-schwanz-flausch { fill: none; stroke: var(--fell); stroke-width: 27; stroke-linecap: round; stroke-dasharray: 0.1 5.5; }
-.k-schwanz { transform-box: view-box; transform-origin: 86px 70px; }
 .k-muetze-stiel { stroke: var(--muetze); stroke-width: 3; stroke-linecap: round; }
+.k-schwanz-rand { fill: none; stroke: var(--k-tusche); stroke-width: 31; stroke-linecap: round; }
+.k-schwanz-fell { fill: none; stroke: var(--fell); stroke-width: 24; stroke-linecap: round; }
+.k-schwanz-ringe { fill: none; stroke: var(--fell-dunkel); stroke-width: 24; stroke-dasharray: 8 11; }
+.k-schwanz { transform-box: view-box; transform-origin: 148px 118px; }
 
 /* Kiko links, Sprechblase rechts mit kleiner Spitze zu Kiko */
-.kiko-says { display: flex; align-items: flex-end; gap: 14px; margin-bottom: 24px; }
-.kiko-says .kiko { flex: 0 0 110px; padding: 0; border: none; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-.kiko-says .kiko:focus-visible { outline: 3px solid var(--orange); outline-offset: 4px; border-radius: var(--radius); }
+.kiko-says { display: flex; align-items: flex-end; gap: 16px; margin-bottom: 24px; }
+.kiko-says .kiko { flex: 0 0 120px; padding: 0; border: none; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.kiko-says .kiko:focus-visible { outline: 3px solid var(--pink); outline-offset: 4px; border-radius: var(--radius); }
 .kiko-says .kiko-bubble { flex: 1; margin-bottom: 0; position: relative; }
+/* Spitze: ein gedrehtes Quadrat mit Rand nur links und unten */
 .kiko-says .kiko-bubble::before {
-  content: ''; position: absolute; left: -10px; bottom: 18px;
-  border: 10px solid transparent; border-right-color: var(--karte); border-left: 0;
+  content: ''; position: absolute; left: -11px; bottom: 18px; width: 16px; height: 16px;
+  background: var(--karte);
+  border-left: var(--kante) solid var(--tusche);
+  border-bottom: var(--kante) solid var(--tusche);
+  transform: rotate(45deg);
 }
 
-.logo { display: inline-flex; align-items: center; gap: 8px; }
-.logo-kiko { width: 45px; }
+.logo { display: inline-flex; align-items: center; gap: 6px; }
+.logo-kiko { width: 52px; }
+/* Logo-Schriftzug: Pink mit Kontur und kleinem Schatten (wie die Überschriften) */
+.logo-wort {
+  font-size: 28px;
+  letter-spacing: 1px;
+  color: var(--pink);
+  -webkit-text-stroke: 1px var(--tusche);
+  paint-order: stroke fill;
+  text-shadow: 2px 2px 0 var(--tusche);
+}
 
 /* Bewegung nur, wenn das Gerät Animationen nicht abgeschaltet hat */
 @media (prefers-reduced-motion: no-preference) {
@@ -395,7 +490,7 @@ a.icon-btn { display: inline-flex; align-items: center; justify-content: center;
 @keyframes kiko-wippen { 50% { transform: rotate(-5deg); } }
 @keyframes blinzeln { 0%, 94%, 100% { transform: scaleY(1); } 97% { transform: scaleY(.1); } }
 
-/* ---------- Schritt 7b: Sterne und Konfetti ---------- */
+/* ---------- Sterne und Konfetti ---------- */
 @media (prefers-reduced-motion: no-preference) {
   /* Sterne ploppen nacheinander auf (--i = 0, 1, 2), volle Sterne federn nach */
   .stars.animiert .star { animation: stern-plopp .45s cubic-bezier(.3, 1.7, .5, 1) both; animation-delay: calc(var(--i) * .25s + .2s); }
@@ -406,40 +501,96 @@ a.icon-btn { display: inline-flex; align-items: center; justify-content: center;
 
 .konfetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; }
 
-/* ---------- Schritt 7c: Dunkles Thema ---------- */
-/* Nur die Variablen ändern sich – alles andere bleibt gleich.
-   Kiko behält sein Fell; Rost wird etwas heller, damit er als Schrift auf Dunkel lesbar bleibt. */
+/* ---------- Dunkles Thema ---------- */
+/* Nur die Variablen ändern sich – alles andere bleibt gleich. Kiko behält seine Farben.
+   Ränder und Schatten werden fast schwarz, die Karten sind heller als der Hintergrund. */
 :root[data-theme="dunkel"] {
   color-scheme: dark;            /* Scrollbalken, Datumsfelder usw. auch dunkel */
-  --creme: #1F1A22;              /* Seitenhintergrund */
-  --braun: #F4E9DE;              /* Schrift */
-  --karte: #2D2631;
-  --feld: #251F29;
-  --rahmen: #4A3F4E;
-  --balken: #3A3140;
-  --stern-aus: #4A3F4E;
-  --rost: #D9633D;
-  --rost-rgb: 217 99 61;
+  --creme: #17122A;              /* Seitenhintergrund */
+  --punkte: #251D3D;
+  --braun: #F4EEFF;              /* Schrift */
+  --tusche: #05030A;
+  --karte: #2A2142;
+  --feld: #211A36;
+  --rahmen: #6A5C8F;
+  --leise: #BDB2DA;
+  --akzent: #FF7AA8;             /* auf Dunkel heller, damit gut lesbar */
+  --balken: #211A36;
+  --stern-aus: #4A3F66;
+  --lila-hell: #3D3160;
+  --gelb-hell: #4A3F1E;
+  --pink-hell: #4A2338;
+  --mint-hell: #1D4A40;
+  --text-auf-farbe: #1E1530;
   --schatten-rgb: 0 0 0;
   --muetze: #4A4262;             /* sonst verschwindet die Mütze im Dunkeln */
 }
+/* Diese Flächen sind im dunklen Thema dunkel → helle Schrift */
+:root[data-theme="dunkel"] .notice,
+:root[data-theme="dunkel"] .fix-btn { color: var(--braun); }
 
 .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .theme-btn {
   min-width: 48px;
   min-height: 48px;
-  border: none;
+  border: var(--kante) solid var(--tusche);
   border-radius: 50%;
-  background: rgb(var(--schatten-rgb) / .2);
-  font-size: 22px;
+  background: var(--karte);
+  font-size: 20px;
   cursor: pointer;
+  box-shadow: 3px 3px 0 var(--tusche);
 }
-.theme-btn:hover { background: rgb(var(--schatten-rgb) / .35); }
+.theme-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--tusche); }
 
-/* ---------- Schritt 8: PWA – Installations-Hinweis ---------- */
-.install { margin-top: 32px; padding: 4px 20px; background: var(--karte); border-radius: var(--radius); box-shadow: 0 4px 0 rgb(var(--schatten-rgb) / .12); }
+/* ---------- PWA – Installations-Hinweis ---------- */
+.install { margin-top: 32px; padding: 4px 20px; background: var(--karte); border-radius: var(--radius); }
 div.install { padding: 20px; }
 .install summary { min-height: 48px; display: flex; align-items: center; cursor: pointer; font-weight: 800; }
 .install ol { padding-left: 24px; line-height: 1.6; }
 .install p { margin: 8px 0; }
 .install .btn { width: 100%; }
+
+/* ---------- Icons (js/ui/icons.js) und Sprach-Chips ---------- */
+/* Linien in Schriftfarbe (currentColor), Flächen in Knallfarben – wie kleine Sticker */
+.ic { width: 1.3em; height: 1.3em; flex: none; vertical-align: -.28em; overflow: visible; }
+.ic .s { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ic .s.dick { stroke-width: 2.8; }
+.ic .f { stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; }
+.ic .gelb { fill: var(--gelb); }
+.ic .mint { fill: var(--gruen); }
+.ic .pink { fill: var(--pink); }
+.ic .blau { fill: var(--tropfen); }
+.ic .lila { fill: var(--lila); }
+.ic .weiss { fill: var(--weiss); }
+.ic .voll { fill: currentColor; }
+/* Auf pinken Hauptknöpfen wäre Pink unsichtbar → dort Gelb */
+.btn:not(.btn-secondary):not(.btn-danger):not(.btn-choice) .ic .pink { fill: var(--gelb); }
+
+h1 .ic, h2 .ic { color: var(--braun); }
+.icon-btn .ic { width: 28px; height: 28px; }
+.popup-icon .ic { width: 64px; height: 64px; }
+.theme-btn { display: inline-flex; align-items: center; justify-content: center; color: var(--braun); }
+.theme-btn .ic { width: 26px; height: 26px; }
+.result-icon .ic { width: 30px; height: 30px; }
+.flag-text .ic { width: 1.2em; height: 1.2em; }
+
+.sprach-chip {
+  display: inline-block;
+  padding: 1px 7px;
+  border: 2px solid var(--tusche);
+  border-radius: 8px;
+  color: var(--text-auf-farbe);
+  font-family: var(--schrift);
+  font-size: .72em;
+  font-weight: 800;
+  letter-spacing: .5px;
+  line-height: 1.4;
+  text-shadow: none;
+  -webkit-text-stroke: 0;
+  vertical-align: .12em;
+}
+.sprach-chip.en { background: var(--tropfen); }
+.sprach-chip.fr { background: var(--lila); }
+.sprach-chip.de { background: var(--gelb); }
+.card .cover { font-size: 30px; }
+.card .cover .sprach-chip { padding: 4px 14px; border-width: var(--kante); box-shadow: 3px 3px 0 var(--tusche); }

@@ -1,18 +1,19 @@
 import { books, newId } from '../db.js';
 import { esc, SPRACHEN } from '../utils.js';
+import { icon } from '../ui/icons.js';
 
 export async function renderShelf(app) {
   const list = (await books.all()).sort((a, b) => a.erstelltAm - b.erstelltAm);
 
   const cards = list.map((book) => `
     <a class="card" href="#/buch/${book.id}">
-      <div class="cover">${SPRACHEN[book.sprache].flagge}</div>
+      <div class="cover">${SPRACHEN[book.sprache].chip}</div>
       <h3>${esc(book.titel)}</h3>
       <small>${SPRACHEN[book.sprache].name}${book.schulstufe ? ' · ' + esc(book.schulstufe) + '. Klasse' : ''}</small>
     </a>`).join('');
 
   app.innerHTML = `
-    <a class="back" href="#/start">← Start</a>
+    <a class="back" href="#/start">${icon('zurueck')} Start</a>
     <h1>Mein Bücherregal</h1>
     ${list.length ? `<div class="grid">${cards}</div>` : '<p class="empty">Noch keine Bücher im Regal.</p>'}
 
@@ -28,7 +29,7 @@ export async function renderShelf(app) {
         </label>
         <label>Klasse <input name="schulstufe" type="number" min="1" max="13" placeholder="z. B. 5"></label>
       </div>
-      <button class="btn" type="submit">➕ Buch anlegen</button>
+      <button class="btn" type="submit">${icon('plus')} Buch anlegen</button>
     </form>
   `;
 

@@ -5,7 +5,7 @@
 // Klicks gehen durch (pointer-events: none). Wer am Gerät „Bewegung reduzieren“ eingestellt
 // hat, bekommt kein Konfetti.
 
-const FARBEN = ['--orange', '--rost', '--gruen', '--gelb', '--uk-blau'];
+const FARBEN = ['--pink', '--gruen', '--gelb', '--tropfen', '--lila-hell'];
 
 export function konfetti({ ursprung = null, anzahl = 150, dauer = 3500, verzoegerung = 0 } = {}) {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;

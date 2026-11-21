@@ -1,11 +1,12 @@
 import { books, units, vocab, newId } from '../db.js';
 import { esc, SPRACHEN } from '../utils.js';
 import { confirmDialog } from '../ui/dialog.js';
+import { icon } from '../ui/icons.js';
 
 export async function renderBook(app, bookId) {
   const book = await books.get(bookId);
   if (!book) {
-    app.innerHTML = `<a class="back" href="#/regal">← Regal</a><h1>Buch nicht gefunden</h1>`;
+    app.innerHTML = `<a class="back" href="#/regal">${icon('zurueck')} Regal</a><h1>Buch nicht gefunden</h1>`;
     return;
   }
 
@@ -24,17 +25,17 @@ export async function renderBook(app, bookId) {
   }
 
   app.innerHTML = `
-    <a class="back" href="#/regal">← Regal</a>
-    <h1>${SPRACHEN[book.sprache].flagge} ${esc(book.titel)}</h1>
+    <a class="back" href="#/regal">${icon('zurueck')} Regal</a>
+    <h1>${SPRACHEN[book.sprache].chip} ${esc(book.titel)}</h1>
     ${list.length ? `<ul class="list">${items.join('')}</ul>` : '<p class="empty">Noch keine Lektionen.</p>'}
 
     <form class="form" id="unit-form">
       <h2>Neue Lektion</h2>
       <label>Name <input name="name" required placeholder="z. B. Unit 3: At school"></label>
-      <button class="btn" type="submit">➕ Lektion anlegen</button>
+      <button class="btn" type="submit">${icon('plus')} Lektion anlegen</button>
     </form>
 
-    <button class="btn btn-danger" id="delete-book">🗑 Buch löschen</button>
+    <button class="btn btn-danger" id="delete-book">${icon('muell')} Buch löschen</button>
   `;
 
   app.querySelector('#unit-form').addEventListener('submit', async (event) => {
@@ -53,7 +54,7 @@ export async function renderBook(app, bookId) {
     const ok = await confirmDialog({
       title: 'Buch löschen?',
       text: `"${book.titel}" wird mit allen Lektionen und Vokabeln gelöscht.`,
-      icon: '📚',
+      icon: 'buch',
     });
     if (ok) {
       await books.remove(bookId);

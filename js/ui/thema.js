@@ -5,6 +5,8 @@
 // schon VOR dem ersten Zeichnen lesen muss – sonst blitzt beim Laden kurz das helle Thema auf.
 // Es ist nur eine Anzeige-Einstellung, keine Lerndaten.
 
+import { icon } from './icons.js';
+
 export const THEMA_KEY = 'vokiko-thema';
 
 export function aktuellesThema() {
@@ -21,7 +23,7 @@ function setzeThema(thema) {
 export function initThemaKnopf(knopf) {
   function anzeigen() {
     const dunkel = aktuellesThema() === 'dunkel';
-    knopf.textContent = dunkel ? '☀️' : '🌙';
+    knopf.innerHTML = icon(dunkel ? 'sonne' : 'mond');
     knopf.title = dunkel ? 'Helles Design' : 'Dunkles Design';
     knopf.setAttribute('aria-label', knopf.title);
   }

@@ -10,10 +10,28 @@ import { initThemaKnopf } from './ui/thema.js';
 import { initInstallieren, istInstalliert } from './ui/installieren.js';
 
 const app = document.getElementById('app');
-document.querySelector('.logo').innerHTML = `<span class="logo-kiko">${kikoSvg()}</span> Vokiko`;
+// Logo: Kiko + Schriftzug „Vokiko“
+document.querySelector('.logo').innerHTML = `<span class="logo-kiko">${kikoSvg()}</span><span class="logo-wort">Vokiko</span>`;
 initThemaKnopf(document.getElementById('theme-btn'));
 initInstallieren();
 initKikoStreicheln();
+
+// Bunte Überschriften: jede bekommt eine Farbe aus ihrem Text (gleiche Überschrift = immer gleiche Farbe),
+// zwei hintereinander nie dieselbe. Der Beobachter färbt auch Überschriften, die später erscheinen.
+const TITEL_FARBEN = ['pink', 'mint', 'gelb', 'blau', 'lila'];
+function titelFaerben() {
+  let vorher = null;
+  for (const h of app.querySelectorAll('h1, h2')) {
+    if (!h.dataset.farbe) {
+      const summe = [...h.textContent.trim()].reduce((n, z) => n + z.charCodeAt(0), 0);
+      let i = summe % TITEL_FARBEN.length;
+      if (TITEL_FARBEN[i] === vorher) i = (i + 1) % TITEL_FARBEN.length;
+      h.dataset.farbe = TITEL_FARBEN[i];
+    }
+    vorher = h.dataset.farbe;
+  }
+}
+new MutationObserver(titelFaerben).observe(app, { childList: true, subtree: true });
 
 // Offline-Fähigkeit (Schritt 8): Service Worker anmelden
 if ('serviceWorker' in navigator) {

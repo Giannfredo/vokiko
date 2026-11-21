@@ -19,8 +19,8 @@ export function compareText(vorher, heute) {
   if (!vorher) return 'Das war deine erste Runde in diesem Modus.';
   const v = vorher.fehler;
   const h = heute.fehler;
-  if (v === 0 && h === 0) return 'Letztes Mal 0 Fehler, heute wieder 0. Stark! 💪';
-  if (h < v) return `Letztes Mal ${v} Fehler, heute ${h}. Du wirst besser! 📈`;
+  if (v === 0 && h === 0) return 'Letztes Mal 0 Fehler, heute wieder 0. Stark!';
+  if (h < v) return `Letztes Mal ${v} Fehler, heute ${h}. Du wirst besser!`;
   if (h === v) return `Letztes Mal ${v} Fehler, heute auch ${h}.`;
   return `Letztes Mal ${v} Fehler, heute ${h}. Beim nächsten Mal klappt's wieder besser!`;
 }

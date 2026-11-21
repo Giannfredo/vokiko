@@ -1,5 +1,6 @@
 // dialog.js – eigenes, freundliches Bestätigungs-Popup statt confirm()
 import { esc } from '../utils.js';
+import { icon as iconSvg } from './icons.js';
 
 /**
  * Zeigt ein Popup und wartet auf die Antwort.
@@ -13,13 +14,13 @@ export function confirmDialog({
   text = '',
   okLabel = 'Ja, löschen',
   cancelLabel = 'Abbrechen',
-  icon = '🐾',
+  icon = 'pfote', // Name aus js/ui/icons.js
 } = {}) {
   return new Promise((resolve) => {
     const dialog = document.createElement('dialog');
     dialog.className = 'popup';
     dialog.innerHTML = `
-      <div class="popup-icon">${icon}</div>
+      <div class="popup-icon">${iconSvg(icon)}</div>
       <h2>${esc(title)}</h2>
       ${text ? `<p>${esc(text)}</p>` : ''}
       <div class="popup-buttons">

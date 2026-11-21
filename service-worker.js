@@ -36,6 +36,7 @@ const APP_DATEIEN = [
   'js/screens/start.js',
   'js/screens/unit.js',
   'js/ui/dialog.js',
+  'js/ui/icons.js',
   'js/ui/installieren.js',
   'js/ui/kiko.js',
   'js/ui/konfetti.js',

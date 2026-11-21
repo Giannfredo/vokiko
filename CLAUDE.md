@@ -35,13 +35,14 @@ Spezifikation: https://claude.ai/artifact/Ft55XZMdSKqsB6rfLp3tw1
 - `js/ui/konfetti.js` – `konfetti({ursprung, verzoegerung})`: Canvas-Konfetti in den App-Farben, aus bei „Bewegung reduzieren“
 - `js/ui/installieren.js` – Hinweis/Knopf „Als App installieren“ auf der Startseite (nicht in der installierten App)
 - `js/ui/thema.js` – Design-Thema bunt/dunkel (`data-theme="dunkel"` am `<html>`, Knopf in der Kopfleiste)
-- `js/ui/kiko.js` – Kiko als SVG: `kikoSvg({stimmung, outfit})`, `kikoSays(html, {stimmung, outfit})`; Stimmungen `normal|freude|denkt|troestet`, Outfit aus `SPRACHEN[x].outfit` (`schal`/`muetze`)
+- `js/ui/kiko.js` – Kiko als SVG im Manga-Stil (Tusche-Konturen, Glanzaugen): `kikoSvg({stimmung, outfit})`, `kikoSays(html, {stimmung, outfit})`; Stimmungen `normal|freude|denkt|troestet`, Outfit aus `SPRACHEN[x].outfit` (`schal`/`muetze`)
 - `js/screens/*.js` – ein Modul pro Bildschirm, Signatur `async function renderX(app, ...params)`
 
 ## Regeln
 - Jeder Text, den Nutzer eingeben, wird mit `esc()` ins HTML eingefügt.
 - Nie `alert()`/`confirm()` – immer `confirmDialog()` aus `js/ui/dialog.js`.
-- Farben nur über die CSS-Variablen in `:root` (`--rost`, `--orange`, `--creme` = Hintergrund, `--braun` = Schrift, `--gruen`, `--karte`, `--feld`, `--rahmen` …). Neue Farben immer als Variable anlegen und für das dunkle Thema in `:root[data-theme="dunkel"]` mitdenken.
+- Design: Manga/K-Pop-Sticker-Look (Retro-Konsolen-Gefühl) – dicke Tusche-Ränder (`--kante`), harte Schatten ohne Unschärfe (`--versatz`), Schriften `--schrift-titel` (Dela Gothic One) und `--schrift` (M PLUS Rounded 1c).
+- Farben nur über die CSS-Variablen in `:root` (`--creme` = Hintergrund, `--braun` = Schrift, `--tusche` = Ränder/Schatten, `--pink` = Hauptknöpfe, `--akzent` = Pink für Text, `--gruen`, `--gelb`, `--karte`, `--feld`, `--leise` …; Kiko: `--fell`, `--k-tusche` …). Neue Farben immer als Variable anlegen und für das dunkle Thema in `:root[data-theme="dunkel"]` mitdenken.
 - Tippflächen mindestens 48 px hoch.
 - Neue Datei angelegt? → in `APP_DATEIEN` in `service-worker.js` eintragen (sonst fehlt sie offline).
 - IDs mit `newId()` (kein `crypto.randomUUID`, das braucht HTTPS).

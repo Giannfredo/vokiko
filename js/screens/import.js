@@ -1,31 +1,32 @@
 import { books, units, vocab, newId } from '../db.js';
-import { esc, SPRACHEN } from '../utils.js';
+import { esc, SPRACHEN, DEUTSCH_CHIP } from '../utils.js';
 import { kikoSays } from '../ui/kiko.js';
 import { confirmDialog } from '../ui/dialog.js';
 import { loadImage, prepareImage, recognizeAll } from '../ocr.js';
 import { parseWords } from '../parser.js';
 import { normalize } from '../quiz.js';
+import { icon } from '../ui/icons.js';
 
 export async function renderImport(app, unitId) {
   const unit = await units.get(unitId);
   if (!unit) {
-    app.innerHTML = `<a class="back" href="#/regal">← Regal</a><h1>Lektion nicht gefunden</h1>`;
+    app.innerHTML = `<a class="back" href="#/regal">${icon('zurueck')} Regal</a><h1>Lektion nicht gefunden</h1>`;
     return;
   }
   const book = await books.get(unit.bookId);
   const sprache = SPRACHEN[book.sprache];
-  const back = `<a class="back" href="#/lektion/${unitId}">← ${esc(unit.name)}</a>`;
+  const back = `<a class="back" href="#/lektion/${unitId}">${icon('zurueck')} ${esc(unit.name)}</a>`;
 
   // ---------- Phase 1: Foto wählen ----------
   app.innerHTML = `${back}
-    <h1>📷 Foto einlesen</h1>
+    <h1>${icon('kamera')} Foto einlesen</h1>
     ${kikoSays('Fotografiere die Vokabelliste möglichst gerade, hell und scharf. Am besten nur eine Seite pro Foto.',
       { outfit: sprache.outfit })}
     <div class="row">
-      <label class="btn file-btn">📷 Foto aufnehmen
+      <label class="btn file-btn">${icon('kamera')} Foto aufnehmen
         <input type="file" accept="image/*" capture="environment" hidden data-photo>
       </label>
-      <label class="btn btn-secondary file-btn">🖼 Aus der Galerie
+      <label class="btn btn-secondary file-btn">${icon('galerie')} Aus der Galerie
         <input type="file" accept="image/*" hidden data-photo>
       </label>
     </div>
@@ -51,7 +52,7 @@ export async function renderImport(app, unitId) {
     let bereiche = []; // [{ x, y, w, h }] als Anteile 0–1 des gedrehten Bilds
 
     app.innerHTML = `${back}
-      <h1>📷 Foto vorbereiten</h1>
+      <h1>${icon('kamera')} Foto vorbereiten</h1>
       <p>Zieh mit Finger oder Maus einen Rahmen um die Vokabeln – gern auch mehrere.
          Ohne Rahmen liest Kiko die ganze Seite. Die Schrift soll waagrecht stehen.</p>
       <div class="preview-box">
@@ -60,8 +61,8 @@ export async function renderImport(app, unitId) {
         </div>
       </div>
       <div class="row">
-        <button class="btn btn-secondary" id="rotate">↻ Drehen</button>
-        <button class="btn btn-secondary" id="clear" hidden>🗑 Rahmen löschen</button>
+        <button class="btn btn-secondary" id="rotate">${icon('drehen')} Drehen</button>
+        <button class="btn btn-secondary" id="clear" hidden>${icon('muell')} Rahmen löschen</button>
       </div>
       <button class="btn btn-start" id="start"></button>`;
 
@@ -81,12 +82,12 @@ export async function renderImport(app, unitId) {
         <div class="crop-box ${b === entwurf ? 'draft' : ''}"
              style="left:${b.x * 100}%;top:${b.y * 100}%;width:${b.w * 100}%;height:${b.h * 100}%">
           ${b === entwurf ? '' : `<span class="crop-nr">${i + 1}</span>
-            <button class="crop-remove" data-remove="${i}" aria-label="Rahmen ${i + 1} entfernen">✕</button>`}
+            <button class="crop-remove" data-remove="${i}" aria-label="Rahmen ${i + 1} entfernen">${icon('x')}</button>`}
         </div>`).join('');
       app.querySelector('#clear').hidden = bereiche.length === 0;
-      app.querySelector('#start').textContent = bereiche.length
-        ? `🔍 ${bereiche.length} ${bereiche.length === 1 ? 'Bereich' : 'Bereiche'} erkennen`
-        : '🔍 Ganze Seite erkennen';
+      app.querySelector('#start').innerHTML = bereiche.length
+        ? `${icon('lupe')} ${bereiche.length} ${bereiche.length === 1 ? 'Bereich' : 'Bereiche'} erkennen`
+        : `${icon('lupe')} Ganze Seite erkennen`;
     }
     drawPreview();
 
@@ -140,7 +141,7 @@ export async function renderImport(app, unitId) {
   // ---------- Phase 3: Texterkennung ----------
   async function runOcr(canvases) {
     app.innerHTML = `${back}
-      <h1>📷 Foto einlesen</h1>
+      <h1>${icon('kamera')} Foto einlesen</h1>
       ${kikoSays('Hmm, mal sehen … Ich lese die Wörter. Das dauert einen Moment.', { stimmung: 'denkt', outfit: sprache.outfit })}
       <div class="preview-box preview-strip" id="preview"></div>
       <p id="ocr-status">Einen Moment …</p>
@@ -168,7 +169,7 @@ export async function renderImport(app, unitId) {
       app.querySelector('#ocr-status').textContent =
         'Das hat leider nicht geklappt. Bist du mit dem Internet verbunden? (Beim ersten Mal werden Sprachdaten geladen.)';
       app.querySelector('#ocr-status').insertAdjacentHTML('afterend',
-        `<button class="btn" id="retry">🔁 Nochmal versuchen</button>`);
+        `<button class="btn" id="retry">${icon('nochmal')} Nochmal versuchen</button>`);
       app.querySelector('#retry').addEventListener('click', () => renderImport(app, unitId));
     }
   }
@@ -184,17 +185,17 @@ export async function renderImport(app, unitId) {
         ? ` und ${ausgelassen} Zeilen ohne Vokabel ausgelassen (Überschriften, Erklärtexte)` : ''}.
          Texterkennung macht Fehler – schau jede Zeile kurz an. Mehrere Bedeutungen mit <code>;</code> trennen.</p>
       <div class="row">
-        <button class="btn btn-secondary" id="swap">⇄ Spalten tauschen</button>
-        <button class="btn btn-secondary" id="add">➕ Zeile</button>
+        <button class="btn btn-secondary" id="swap">${icon('tauschen')} Spalten tauschen</button>
+        <button class="btn btn-secondary" id="add">${icon('plus')} Zeile</button>
       </div>
-      <div class="review-head"><span>${sprache.flagge} ${sprache.name}</span><span>🇩🇪 Deutsch</span></div>
+      <div class="review-head"><span>${sprache.chip} ${sprache.name}</span><span>${DEUTSCH_CHIP} Deutsch</span></div>
       <ul class="list" id="review"></ul>
       <details class="raw">
         <summary>Erkannten Text anzeigen</summary>
         <pre>${esc(rohtext)}</pre>
       </details>
       <div class="row">
-        <button class="btn" id="save">💾 Speichern</button>
+        <button class="btn" id="save">${icon('speichern')} Speichern</button>
         <a class="btn btn-secondary" href="#/lektion/${unitId}">Abbrechen</a>
       </div>`;
 
@@ -209,7 +210,7 @@ export async function renderImport(app, unitId) {
 
     function updateCount() {
       const anzahl = rows.filter((r) => vollstaendig(r) && !vorhanden.has(normalize(r.fremd))).length;
-      app.querySelector('#save').textContent = `💾 ${anzahl} Vokabeln speichern`;
+      app.querySelector('#save').innerHTML = `${icon('speichern')} ${anzahl} Vokabeln speichern`;
       app.querySelector('#save').disabled = anzahl === 0;
     }
 
@@ -217,7 +218,7 @@ export async function renderImport(app, unitId) {
     function updateRow(li) {
       const hinweis = hintFor(rows[li.dataset.i]);
       li.classList.toggle('flag', Boolean(hinweis));
-      li.querySelector('.flag-text').textContent = hinweis ? `⚠️ ${hinweis}` : '';
+      li.querySelector('.flag-text').innerHTML = hinweis ? `${icon('warnung')} ${esc(hinweis)}` : '';
     }
 
     function draw() {
@@ -228,12 +229,12 @@ export async function renderImport(app, unitId) {
             <input data-field="fremd" value="${esc(r.fremd)}" aria-label="${sprache.name}"
                    autocomplete="off" autocapitalize="off" spellcheck="false">
             <input data-field="deutsch" value="${esc(r.deutsch)}" aria-label="Deutsch" autocomplete="off">
-            <button class="icon-btn" data-remove="${i}" title="Zeile löschen">🗑</button>
+            <button class="icon-btn" data-remove="${i}" title="Zeile löschen" aria-label="Zeile löschen">${icon('muell')}</button>
             <input class="beispiel" data-field="beispiel" value="${esc(r.beispiel || '')}"
                    placeholder="Beispielsatz (optional)" aria-label="Beispielsatz" autocomplete="off">
-            <small class="flag-text">${hinweis ? `⚠️ ${hinweis}` : ''}</small>
+            <small class="flag-text">${hinweis ? `${icon('warnung')} ${esc(hinweis)}` : ''}</small>
           </li>`;
-      }).join('') || '<p class="empty">Keine Zeilen. Füge mit „➕ Zeile“ welche hinzu.</p>';
+      }).join('') || '<p class="empty">Keine Zeilen. Füge mit „Zeile“ welche hinzu.</p>';
       updateCount();
     }
     draw();
@@ -282,7 +283,7 @@ export async function renderImport(app, unitId) {
           text: `${uebrig} Zeilen sind unvollständig oder schon vorhanden und werden nicht gespeichert.`,
           okLabel: 'Speichern',
           cancelLabel: 'Zurück',
-          icon: '💾',
+          icon: 'speichern',
         });
         if (!ok) return;
       }

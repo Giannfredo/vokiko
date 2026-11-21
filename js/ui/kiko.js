@@ -1,107 +1,132 @@
-// kiko.js – Kiko, der Rote Panda, als SVG-Grafik (keine Bilddatei nötig)
+// kiko.js – Kiko, der Rote Panda, als SVG-Grafik im Manga-Stil (keine Bilddatei nötig)
 //
 // stimmung: 'normal' | 'freude' | 'denkt' | 'troestet'
 // outfit:   null | 'schal' (Englisch, Union-Jack-Schal) | 'muetze' (Französisch, Baskenmütze)
-// Die Farben kommen aus CSS-Klassen (k-fell, k-weiss, …), die auf Variablen in :root zeigen.
+// Die Farben kommen aus CSS-Klassen (k-fell, k-tusche, …), die auf Variablen in :root zeigen.
+// Manga-Merkmale: dicke Tusche-Konturen, große Augen mit zwei Glanzpunkten, Rouge-Striche.
 
-// Augen und Mund je Stimmung. Augen mit class="augen" blinzeln (siehe style.css).
+// Zwei große Glanzaugen. Mit dx/dy schaut Kiko woandershin (die Iris wandert), glanz = Größe der Lichtpunkte.
+function augen({ dx = 0, dy = 0, glanz = 6.5, extra = '' } = {}) {
+  const auge = (x) => `
+    <ellipse class="k-tusche" cx="${x}" cy="106" rx="16" ry="20"/>
+    <ellipse class="k-iris" cx="${x + dx}" cy="${114 + dy}" rx="11" ry="10"/>
+    <circle class="k-glanz" cx="${x - 6 + dx / 2}" cy="${97 + dy / 2}" r="${glanz}"/>
+    <circle class="k-glanz" cx="${x + 6}" cy="116" r="${glanz / 2.2}"/>`;
+  return `<g class="augen">${auge(68)}${auge(132)}${extra}</g>`;
+}
+
+// Kleiner 4-zackiger Funkel-Stern (Manga-Glitzer) an Position x/y
+const funkel = (x, y, s = 1, klasse = 'k-funkel') =>
+  `<path class="${klasse}" transform="translate(${x} ${y}) scale(${s})" d="M0 -10 Q2 -2 10 0 Q2 2 0 10 Q-2 2 -10 0 Q-2 -2 0 -10 Z"/>`;
+
+// Augen, Mund und Extras je Stimmung. Augen mit class="augen" blinzeln (siehe style.css).
 const GESICHTER = {
   normal: `
-    <g class="augen">
-      <circle class="k-dunkel" cx="44" cy="66" r="5.5"/><circle class="k-weiss" cx="46" cy="64" r="1.8"/>
-      <circle class="k-dunkel" cx="76" cy="66" r="5.5"/><circle class="k-weiss" cx="78" cy="64" r="1.8"/>
-    </g>
-    <path class="k-linie" d="M54 84 Q60 89 66 84"/>`,
+    ${augen()}
+    <path class="k-strich" d="M52 98 Q48 93 45 91 M148 98 Q152 93 155 91"/>
+    <path class="k-strich" d="M88 137 Q94 143 100 137 Q106 143 112 137"/>`,
   freude: `
-    <path class="k-linie dick" d="M38 68 Q44 60 50 68"/>
-    <path class="k-linie dick" d="M70 68 Q76 60 82 68"/>
-    <ellipse class="k-backe" cx="31" cy="79" rx="6" ry="3.5"/>
-    <ellipse class="k-backe" cx="89" cy="79" rx="6" ry="3.5"/>
-    <path class="k-dunkel" d="M52 83 Q60 96 68 83 Z"/>
-    <path class="k-zunge" d="M56 88 Q60 94 64 88 Z"/>`,
+    <path class="k-strich dick" d="M52 112 Q68 88 84 112 M116 112 Q132 88 148 112"/>
+    <path class="k-tusche k-umriss" d="M86 134 Q100 162 114 134 Z"/>
+    <path class="k-zunge" d="M92 146 Q100 141 108 146 Q100 156 92 146 Z"/>
+    ${funkel(18, 44, 1)}${funkel(10, 98, 0.6)}${funkel(190, 150, 0.9, 'k-funkel blau')}`,
   denkt: `
-    <g class="augen">
-      <circle class="k-dunkel" cx="46" cy="63" r="5.5"/><circle class="k-weiss" cx="48" cy="61" r="1.8"/>
-      <circle class="k-dunkel" cx="78" cy="63" r="5.5"/><circle class="k-weiss" cx="80" cy="61" r="1.8"/>
-    </g>
-    <path class="k-linie" d="M55 86 Q61 83 66 86"/>`,
+    ${augen({ dx: 5, dy: -15, glanz: 5.5 })}
+    <path class="k-strich" d="M54 82 Q66 78 80 82 M120 80 Q134 74 146 78"/>
+    <path class="k-strich" d="M92 139 Q100 135 109 139"/>
+    <path class="k-tropfen" d="M28 62 Q20 76 28 82 Q36 76 28 62 Z"/>
+    <circle class="k-blase" cx="186" cy="152" r="4"/><circle class="k-blase" cx="195" cy="138" r="6"/>`,
   troestet: `
-    <g class="augen">
-      <circle class="k-dunkel" cx="44" cy="67" r="5"/><circle class="k-weiss" cx="46" cy="65" r="1.6"/>
-      <circle class="k-dunkel" cx="76" cy="67" r="5"/><circle class="k-weiss" cx="78" cy="65" r="1.6"/>
-    </g>
-    <path class="k-linie" d="M55 85 Q60 88 65 85"/>`,
+    ${augen({ glanz: 8, extra: '<circle class="k-glanz" cx="58" cy="112" r="2"/><circle class="k-glanz" cx="122" cy="112" r="2"/>' })}
+    <path class="k-traenen-linie" d="M52 124 Q68 131 84 124 M116 124 Q132 131 148 124"/>
+    <path class="k-strich" d="M52 84 Q64 80 78 76 M122 76 Q136 80 148 84"/>
+    <path class="k-strich" d="M91 142 Q100 136 109 142"/>
+    <path class="k-herz" d="M186 146 C178 138 168 148 186 160 C204 148 194 138 186 146 Z"/>`,
 };
 
 // Weiße „Augenbrauen“-Flecken: beim Nachdenken eine hochgezogen, beim Trösten schräg (mitfühlend)
 function brauen(stimmung) {
   if (stimmung === 'denkt') {
-    return `<ellipse class="k-weiss" cx="44" cy="53" rx="7" ry="4.5"/>
-            <ellipse class="k-weiss" cx="76" cy="49" rx="7" ry="4.5" transform="rotate(-12 76 49)"/>`;
+    return `<ellipse class="k-hell" cx="66" cy="72" rx="10" ry="6"/>
+            <ellipse class="k-hell" cx="134" cy="68" rx="10" ry="6" transform="rotate(-12 134 68)"/>`;
   }
   if (stimmung === 'troestet') {
-    return `<ellipse class="k-weiss" cx="44" cy="54" rx="7" ry="4.5" transform="rotate(-18 44 54)"/>
-            <ellipse class="k-weiss" cx="76" cy="54" rx="7" ry="4.5" transform="rotate(18 76 54)"/>`;
+    return `<ellipse class="k-hell" cx="66" cy="72" rx="10" ry="6" transform="rotate(-18 66 72)"/>
+            <ellipse class="k-hell" cx="134" cy="72" rx="10" ry="6" transform="rotate(18 134 72)"/>`;
   }
-  return `<ellipse class="k-weiss" cx="44" cy="53" rx="7" ry="4.5"/>
-          <ellipse class="k-weiss" cx="76" cy="53" rx="7" ry="4.5"/>`;
+  return `<ellipse class="k-hell" cx="66" cy="74" rx="10" ry="6"/>
+          <ellipse class="k-hell" cx="134" cy="74" rx="10" ry="6"/>`;
 }
+
+// Outfits sind für einen kleineren Kopf gezeichnet (Mitte 60/64) und werden auf den
+// neuen Kopf (Mitte 100/102) vergrößert.
+const OUTFIT_PASSEND = 'translate(100 102) scale(1.8) translate(-60 -64)';
+const SCHAL_PASSEND = 'translate(100 90) scale(1.75) translate(-60 -64)'; // etwas höher, sonst hängt er unter dem Kinn
 
 // Schal mit Union-Jack-Zipfel (Englisch)
 const SCHAL = `
-  <path class="k-uk-blau" d="M24 92 Q60 110 96 92 L98 103 Q60 122 22 103 Z"/>
-  <path class="k-weiss-linie" d="M23 97.5 Q60 116 97 97.5"/>
-  <path class="k-uk-rot-linie" d="M23 97.5 Q60 116 97 97.5"/>
-  <g transform="translate(70 102) rotate(8)">
-    <rect class="k-uk-blau" width="20" height="24" rx="2"/>
-    <path class="k-uk-weiss" d="M0 0 L20 24 M20 0 L0 24" stroke-width="4"/>
-    <path class="k-uk-rot" d="M0 0 L20 24 M20 0 L0 24" stroke-width="1.5"/>
-    <path class="k-uk-weiss" d="M10 0 V24 M0 12 H20" stroke-width="6"/>
-    <path class="k-uk-rot" d="M10 0 V24 M0 12 H20" stroke-width="3.5"/>
+  <g transform="${SCHAL_PASSEND}">
+    <path class="k-uk-blau k-umriss-duenn" d="M24 92 Q60 110 96 92 L98 103 Q60 122 22 103 Z"/>
+    <path class="k-weiss-linie" d="M23 97.5 Q60 116 97 97.5"/>
+    <path class="k-uk-rot-linie" d="M23 97.5 Q60 116 97 97.5"/>
+    <g transform="translate(70 102) rotate(8)">
+      <rect class="k-uk-blau" width="20" height="24" rx="2"/>
+      <path class="k-uk-weiss" d="M0 0 L20 24 M20 0 L0 24" stroke-width="4"/>
+      <path class="k-uk-rot" d="M0 0 L20 24 M20 0 L0 24" stroke-width="1.5"/>
+      <path class="k-uk-weiss" d="M10 0 V24 M0 12 H20" stroke-width="6"/>
+      <path class="k-uk-rot" d="M10 0 V24 M0 12 H20" stroke-width="3.5"/>
+      <rect class="k-umriss-duenn" width="20" height="24" rx="2" fill="none"/>
+    </g>
   </g>`;
 
 // Baskenmütze (Französisch), leicht schief auf dem Kopf
 const MUETZE = `
-  <g transform="rotate(-10 62 30)">
-    <path class="k-muetze" d="M30 34 Q34 14 62 13 Q92 14 96 32 Q62 42 30 34 Z"/>
-    <path class="k-muetze-stiel" d="M62 13 L64 6"/>
+  <g transform="${OUTFIT_PASSEND}">
+    <g transform="rotate(-10 62 30)">
+      <path class="k-muetze k-umriss-duenn" d="M30 34 Q34 14 62 13 Q92 14 96 32 Q62 42 30 34 Z"/>
+      <path class="k-muetze-stiel" d="M62 13 L64 6"/>
+    </g>
   </g>`;
 
-// Buschiger, geringelter Schwanz hinter dem Kopf (wird zuerst gezeichnet = liegt hinten).
-// Die Ringe sind dieselbe Linie noch einmal, gestrichelt in dunklerem Fell.
-// Der Rand aus vielen kleinen Kreisen (gestrichelt mit runden Enden) macht ihn flauschig.
-// Bei Freude wedelt er (CSS-Animation um den Ansatzpunkt 86/70, siehe style.css).
-const SCHWANZ_LINIE = 'M86 70 C106 76 124 70 128 52 C130 42 127 34 121 28';
+// Sternchen-Haarspange am linken Ohr (fällt unter der Mütze weg)
+const SPANGE = `<path class="k-funkel" transform="translate(58 44) rotate(-15)"
+  d="M0 -11 L3.2 -4 L10.5 -3.4 L5 1.6 L6.5 9 L0 5 L-6.5 9 L-5 1.6 L-10.5 -3.4 L-3.2 -4 Z"/>`;
+
+// Geringelter Schwanz hinter dem Kopf, rechts (wird zuerst gezeichnet = liegt hinten).
+// Dreimal dieselbe Linie: breit in Tusche (= Kontur), etwas schmaler in Fell, darüber gestrichelt die Ringe.
+// Bei Freude wedelt er (CSS-Animation um den Ansatzpunkt 148/118, siehe style.css).
+const SCHWANZ_LINIE = 'M148 118 C174 122 184 104 182 82 C180 68 174 58 166 52';
 const SCHWANZ = `
   <g class="k-schwanz">
-    <path class="k-schwanz-flausch" d="${SCHWANZ_LINIE}"/>
+    <path class="k-schwanz-rand" d="${SCHWANZ_LINIE}"/>
     <path class="k-schwanz-fell" d="${SCHWANZ_LINIE}"/>
     <path class="k-schwanz-ringe" d="${SCHWANZ_LINIE}"/>
-    <circle class="k-ohr-innen" cx="121" cy="27" r="11.5"/>
+    <circle class="k-hell k-umriss" cx="166" cy="51" r="11"/>
   </g>`;
 
 // Ein Ohr (das rechte entsteht durch Spiegeln)
 const OHR = `
-  <path class="k-fell k-ohr-rand" d="M20 52 C10 30 20 12 46 28 Z"/>
-  <path class="k-ohr-innen" d="M24 45 C19 31 25 22 39 30 Z"/>`;
+  <path class="k-fell k-umriss" d="M30 70 Q22 24 40 14 Q58 14 86 40 Z"/>
+  <path class="k-hell" d="M40 56 Q36 30 44 25 Q56 27 72 40 Z"/>`;
 
 export function kikoSvg({ stimmung = 'normal', outfit = null } = {}) {
   const gesicht = GESICHTER[stimmung] || GESICHTER.normal;
   return `
-    <svg class="kiko-svg" viewBox="0 0 150 128" role="img" aria-label="Kiko, der Rote Panda">
+    <svg class="kiko-svg" viewBox="0 0 200 180" role="img" aria-label="Kiko, der Rote Panda">
       ${SCHWANZ}
       <g>${OHR}</g>
-      <g transform="translate(120 0) scale(-1 1)">${OHR}</g>
-      <ellipse class="k-fell" cx="60" cy="64" rx="42" ry="36"/>
+      <g transform="translate(200 0) scale(-1 1)">${OHR}</g>
+      <ellipse class="k-fell k-umriss" cx="100" cy="102" rx="80" ry="64"/>
+      <ellipse class="k-hell" cx="44" cy="130" rx="16" ry="13"/>
+      <ellipse class="k-hell" cx="156" cy="130" rx="16" ry="13"/>
+      <ellipse class="k-hell" cx="100" cy="134" rx="38" ry="26"/>
       ${brauen(stimmung)}
-      <ellipse class="k-weiss" cx="27" cy="77" rx="10" ry="9"/>
-      <ellipse class="k-weiss" cx="93" cy="77" rx="10" ry="9"/>
-      <ellipse class="k-weiss" cx="60" cy="84" rx="22" ry="14"/>
-      <path class="k-traene" d="M41 72 Q38 80 35 87 M79 72 Q82 80 85 87"/>
+      <path class="k-rouge" d="M36 128 l6 -8 M44 130 l6 -8 M52 132 l6 -8 M142 132 l6 -8 M150 130 l6 -8 M158 128 l6 -8"/>
       ${gesicht}
-      <ellipse class="k-dunkel" cx="60" cy="78" rx="5" ry="3.5"/>
+      <path class="k-tusche k-umriss" d="M93 124 Q100 120 107 124 Q104 131 100 132 Q96 131 93 124 Z"/>
+      <circle class="k-glanz" cx="97" cy="124" r="1.6"/>
+      ${outfit === 'muetze' ? MUETZE : SPANGE}
       ${outfit === 'schal' ? SCHAL : ''}
-      ${outfit === 'muetze' ? MUETZE : ''}
     </svg>`;
 }
 

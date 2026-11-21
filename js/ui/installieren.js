@@ -5,6 +5,8 @@
 // - iPhone/iPad: Safari hat keinen solchen Knopf → kurze Anleitung „Teilen → Zum Home-Bildschirm“.
 // - Läuft Vokiko schon als installierte App, wird nichts angezeigt.
 
+import { icon } from './icons.js';
+
 let installAnfrage = null; // aufgehobenes beforeinstallprompt-Ereignis
 
 export function istInstalliert() {
@@ -32,7 +34,7 @@ export function installHinweis() {
 }
 
 const DATEN_TIPP = `<p><small>Tipp: Die App hat ihren eigenen Speicher. Bücher, die du schon im Browser angelegt
-  hast, nimmst du über 📊 Historie → Exportieren und in der App → Importieren mit.</small></p>`;
+  hast, nimmst du über Historie → Exportieren und in der App → Importieren mit.</small></p>`;
 
 export function zeichnen() {
   const ziel = document.getElementById('install-hinweis');
@@ -42,7 +44,7 @@ export function zeichnen() {
   if (installAnfrage) {
     ziel.innerHTML = `
       <div class="install">
-        <button class="btn" type="button" id="install-btn">📲 Vokiko als App installieren</button>
+        <button class="btn" type="button" id="install-btn">${icon('handy')} Vokiko als App installieren</button>
         ${DATEN_TIPP}
       </div>`;
     ziel.querySelector('#install-btn').addEventListener('click', async () => {
@@ -54,7 +56,7 @@ export function zeichnen() {
   } else if (istIOS()) {
     ziel.innerHTML = `
       <details class="install">
-        <summary>📲 Vokiko als App auf den Home-Bildschirm</summary>
+        <summary>${icon('handy')} Vokiko als App auf den Home-Bildschirm</summary>
         <ol>
           <li>Diese Seite in <strong>Safari</strong> öffnen.</li>
           <li>Unten auf <strong>Teilen</strong> tippen (Quadrat mit Pfeil nach oben).</li>
@@ -65,7 +67,7 @@ export function zeichnen() {
   } else {
     ziel.innerHTML = `
       <details class="install">
-        <summary>📲 Vokiko als App installieren</summary>
+        <summary>${icon('handy')} Vokiko als App installieren</summary>
         <p>Im Menü deines Browsers <strong>„App installieren“</strong> oder
            <strong>„Zum Startbildschirm hinzufügen“</strong> wählen.</p>
         ${DATEN_TIPP}

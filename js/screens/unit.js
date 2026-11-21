@@ -1,12 +1,13 @@
 import { books, units, vocab, newId } from '../db.js';
-import { esc, SPRACHEN } from '../utils.js';
+import { esc, SPRACHEN, DEUTSCH_CHIP } from '../utils.js';
 import { confirmDialog } from '../ui/dialog.js';
 import { canSpeak, speak } from '../speech.js';
+import { icon } from '../ui/icons.js';
 
 export async function renderUnit(app, unitId) {
   const unit = await units.get(unitId);
   if (!unit) {
-    app.innerHTML = `<a class="back" href="#/regal">← Regal</a><h1>Lektion nicht gefunden</h1>`;
+    app.innerHTML = `<a class="back" href="#/regal">${icon('zurueck')} Regal</a><h1>Lektion nicht gefunden</h1>`;
     return;
   }
   const book = await books.get(unit.bookId);
@@ -19,37 +20,37 @@ export async function renderUnit(app, unitId) {
         <div class="fremd">${esc(w.fremd)}</div>
         <div class="deutsch">${esc(w.deutsch)}</div>
       </div>
-      ${canSpeak() ? `<button class="icon-btn" data-speak="${w.id}" title="Anhören">🔊</button>` : ''}
-      <button class="icon-btn" data-edit="${w.id}" title="Bearbeiten">✏️</button>
-      <button class="icon-btn" data-delete="${w.id}" title="Löschen">🗑</button>
+      ${canSpeak() ? `<button class="icon-btn" data-speak="${w.id}" title="Anhören" aria-label="Anhören">${icon('laut')}</button>` : ''}
+      <button class="icon-btn" data-edit="${w.id}" title="Bearbeiten" aria-label="Bearbeiten">${icon('stift')}</button>
+      <button class="icon-btn" data-delete="${w.id}" title="Löschen" aria-label="Löschen">${icon('muell')}</button>
     </li>`).join('');
 
   app.innerHTML = `
-    <a class="back" href="#/buch/${book.id}">← ${esc(book.titel)}</a>
+    <a class="back" href="#/buch/${book.id}">${icon('zurueck')} ${esc(book.titel)}</a>
     <h1>${esc(unit.name)}</h1>
     <p>${words.length} Vokabeln</p>
     <div class="row">
-      ${words.length ? `<a class="btn" href="#/ueben/${unitId}">▶️ Üben</a>` : ''}
-      <a class="btn btn-secondary" href="#/foto/${unitId}">📷 Foto einlesen</a>
+      ${words.length ? `<a class="btn" href="#/ueben/${unitId}">${icon('ueben')} Üben</a>` : ''}
+      <a class="btn btn-secondary" href="#/foto/${unitId}">${icon('kamera')} Foto einlesen</a>
     </div>
     ${words.length ? `<ul class="list">${rows}</ul>` : '<p class="empty">Noch keine Vokabeln. Leg unten die erste an!</p>'}
 
     <form class="form" id="vocab-form">
       <h2 id="form-title">Neue Vokabel</h2>
-      <label>${sprache.flagge} ${sprache.name}
+      <label>${sprache.chip} ${sprache.name}
         <input name="fremd" required autocomplete="off" autocapitalize="off" spellcheck="false">
       </label>
-      <label>🇩🇪 Deutsch
+      <label>${DEUTSCH_CHIP} Deutsch
         <input name="deutsch" required autocomplete="off" placeholder="mehrere Bedeutungen mit ; trennen">
       </label>
       <label>Beispielsatz (optional) <input name="beispiel" autocomplete="off"></label>
       <div class="row">
-        <button class="btn" type="submit" id="save-btn">➕ Hinzufügen</button>
+        <button class="btn" type="submit" id="save-btn">${icon('plus')} Hinzufügen</button>
         <button class="btn btn-secondary" type="button" id="cancel-btn" hidden>Abbrechen</button>
       </div>
     </form>
 
-    <button class="btn btn-danger" id="delete-unit">🗑 Lektion löschen</button>
+    <button class="btn btn-danger" id="delete-unit">${icon('muell')} Lektion löschen</button>
   `;
 
   const form = app.querySelector('#vocab-form');
@@ -61,7 +62,7 @@ export async function renderUnit(app, unitId) {
     form.deutsch.value = w.deutsch;
     form.beispiel.value = w.beispiel || '';
     app.querySelector('#form-title').textContent = 'Vokabel bearbeiten';
-    app.querySelector('#save-btn').textContent = '💾 Speichern';
+    app.querySelector('#save-btn').innerHTML = `${icon('speichern')} Speichern`;
     app.querySelector('#cancel-btn').hidden = false;
     form.scrollIntoView({ behavior: 'smooth' });
     form.fremd.focus();
@@ -94,7 +95,7 @@ export async function renderUnit(app, unitId) {
 
   app.querySelector('#cancel-btn').addEventListener('click', () => renderUnit(app, unitId));
 
-  // Ein Klick-Empfänger für alle ✏️- und 🗑-Knöpfe der Liste
+  // Ein Klick-Empfänger für alle Bearbeiten- und Löschen-Knöpfe der Liste
   app.querySelector('.list')?.addEventListener('click', async (event) => {
     const editId = event.target.dataset.edit;
     const deleteId = event.target.dataset.delete;
@@ -106,7 +107,7 @@ export async function renderUnit(app, unitId) {
       const ok = await confirmDialog({
         title: 'Vokabel löschen?',
         text: `"${w.fremd}" – ${w.deutsch}`,
-        icon: '🗑',
+        icon: 'muell',
       });
       if (!ok) return;
       await vocab.remove(deleteId);
@@ -118,7 +119,7 @@ export async function renderUnit(app, unitId) {
     const ok = await confirmDialog({
       title: 'Lektion löschen?',
       text: `"${unit.name}" wird mit allen ${words.length} Vokabeln gelöscht.`,
-      icon: '📖',
+      icon: 'buch-offen',
     });
     if (ok) {
       await units.remove(unitId);

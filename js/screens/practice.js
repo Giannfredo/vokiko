@@ -1,25 +1,26 @@
 import { books, units, vocab, sessions, answers as answerDb, newId } from '../db.js';
-import { esc, SPRACHEN } from '../utils.js';
+import { esc, SPRACHEN, DEUTSCH_CHIP } from '../utils.js';
 import { buildQuestions, evaluate, countErrors, stars, updateStatus } from '../quiz.js';
 import { previousSession, compareText, problemWords, isBestleistung } from '../history.js';
 import { canSpeak, speak } from '../speech.js';
 import { kikoSays } from '../ui/kiko.js';
 import { konfetti } from '../ui/konfetti.js';
+import { icon } from '../ui/icons.js';
 
 export async function renderPractice(app, unitId) {
   const unit = await units.get(unitId);
   if (!unit) {
-    app.innerHTML = `<a class="back" href="#/regal">← Regal</a><h1>Lektion nicht gefunden</h1>`;
+    app.innerHTML = `<a class="back" href="#/regal">${icon('zurueck')} Regal</a><h1>Lektion nicht gefunden</h1>`;
     return;
   }
   const book = await books.get(unit.bookId);
   const sprache = SPRACHEN[book.sprache];
   const words = await vocab.ofUnit(unitId); // Stand VOR der Runde
-  const back = `<a class="back" href="#/lektion/${unitId}">← ${esc(unit.name)}</a>`;
+  const back = `<a class="back" href="#/lektion/${unitId}">${icon('zurueck')} ${esc(unit.name)}</a>`;
 
-  // 🔊-Knopf: Text steht im data-Attribut, der Klick liest ihn vor
+  // Anhören-Knopf: Text steht im data-Attribut, der Klick liest ihn vor
   const speakBtn = (text) => canSpeak()
-    ? `<button class="icon-btn speak-btn" type="button" data-speak="${esc(text)}" title="Anhören">🔊</button>`
+    ? `<button class="icon-btn speak-btn" type="button" data-speak="${esc(text)}" title="Anhören" aria-label="Anhören">${icon('laut')}</button>`
     : '';
   function wireSpeak() {
     app.querySelectorAll('[data-speak]').forEach((btn) =>
@@ -30,7 +31,7 @@ export async function renderPractice(app, unitId) {
     app.innerHTML = `${back}
       <h1>Noch keine Wörter</h1>
       ${kikoSays('Leg zuerst ein paar Vokabeln an, dann üben wir!', { outfit: sprache.outfit })}
-      <a class="btn" href="#/lektion/${unitId}">➕ Vokabeln anlegen</a>`;
+      <a class="btn" href="#/lektion/${unitId}">${icon('plus')} Vokabeln anlegen</a>`;
     return;
   }
 
@@ -46,15 +47,15 @@ export async function renderPractice(app, unitId) {
     <h2>Wie willst du üben?</h2>
     <div class="choice-list" id="modus">
       <button class="btn btn-choice" data-modus="auswahl" ${auswahlMoeglich ? '' : 'disabled'}>
-        👆 Auswählen – 1 aus 3${auswahlMoeglich ? '' : '<small>ab 3 Vokabeln</small>'}
+        ${icon('auswahl')} Auswählen – 1 aus 3${auswahlMoeglich ? '' : '<small>ab 3 Vokabeln</small>'}
       </button>
-      <button class="btn btn-choice" data-modus="fremd-de">✍️ Schreiben: ${sprache.flagge} → 🇩🇪</button>
-      <button class="btn btn-choice" data-modus="de-fremd">✍️ Schreiben: 🇩🇪 → ${sprache.flagge}</button>
+      <button class="btn btn-choice" data-modus="fremd-de">${icon('stift')} Schreiben: ${sprache.chip} → ${DEUTSCH_CHIP}</button>
+      <button class="btn btn-choice" data-modus="de-fremd">${icon('stift')} Schreiben: ${DEUTSCH_CHIP} → ${sprache.chip}</button>
     </div>
     ${probleme.length ? `
       <label class="toggle">
         <input type="checkbox" id="nur-probleme">
-        🎯 Nur meine Problemwörter (${probleme.length})
+        ${icon('ziel')} Nur meine Problemwörter (${probleme.length})
       </label>` : ''}
     <h2>Wie viele Wörter?</h2>
     <div class="row" id="anzahl"></div>`;
@@ -104,7 +105,7 @@ export async function renderPractice(app, unitId) {
     const q = questions[i];
     const next = (antwort) => askQuestion(questions, [...answers, antwort]);
 
-    const zeigtFremd = q.modus !== 'de-fremd'; // bei DE → Fremd kein 🔊, sonst wäre die Lösung verraten
+    const zeigtFremd = q.modus !== 'de-fremd'; // bei DE → Fremd kein Anhören-Knopf, sonst wäre die Lösung verraten
     const hinweis = q.modus === 'de-fremd' ? `Wie heißt das auf ${sprache.name}?` : 'Was heißt das auf Deutsch?';
 
     const antwortTeil = q.modus === 'auswahl'
@@ -118,13 +119,13 @@ export async function renderPractice(app, unitId) {
             <div class="accent-bar">
               ${sprache.akzente.map((c) => `<button type="button" class="accent-btn" data-char="${c}">${c}</button>`).join('')}
             </div>` : ''}
-          <button class="btn" type="submit">Weiter ➜</button>
+          <button class="btn" type="submit">Weiter ${icon('weiter')}</button>
         </form>`;
 
     app.innerHTML = `
       <div class="quiz-top">
         <span>Wort ${i + 1} von ${questions.length}</span>
-        <a class="back" href="#/lektion/${unitId}">✕ Abbrechen</a>
+        <a class="back" href="#/lektion/${unitId}">${icon('x')} Abbrechen</a>
       </div>
       <div class="progress"><div style="width:${(i / questions.length) * 100}%"></div></div>
       <div class="quiz-word">${esc(q.frage)} ${zeigtFremd ? speakBtn(q.fremd) : ''}</div>
@@ -202,8 +203,9 @@ export async function renderPractice(app, unitId) {
     const fast = ergebnisse.filter((e) => e.ergebnis === 'fast').length;
     const vergleich = compareText(vorher, { fehler });
     const s = stars(fehler, ergebnisse.length);
-    const lob = fehler === 0 && fast === 0 ? 'Wow, alles richtig! 🎉'
+    const lob = fehler === 0 && fast === 0 ? 'Wow, alles richtig!'
       : fehler === 0 ? 'Super! Achte nur noch auf die Akzente.'
+      : fehler === 1 ? 'Super gemacht! Nur ein einziger Fehler.'
       : s >= 2 ? 'Super gemacht! Nur ein paar kleine Fehler.'
       : s === 1 ? 'Gut dabei! Schau dir die Fehler unten nochmal an.'
       : 'Nochmal probieren? Mit jeder Runde wird es leichter.';
@@ -223,12 +225,11 @@ export async function renderPractice(app, unitId) {
         inhalt = `<div>Deine Antwort: <s>${deine}</s></div>
                   <div>Richtig: <strong>${esc(e.richtig)}</strong></div>
                   ${e.modus !== 'auswahl' && e.antwort.trim()
-                    ? `<button class="fix-btn" data-fix="${i}">Doch richtig 👍</button>` : ''}`;
+                    ? `<button class="fix-btn" data-fix="${i}">${icon('haken')} Doch richtig</button>` : ''}`;
       }
-      const icon = { richtig: '✅', fast: '🟡', falsch: '❌' }[e.ergebnis];
-      return `
+            return `
         <li class="result ${e.ergebnis}">
-          <span class="result-icon">${icon}</span>
+          <span class="result-icon">${icon(e.ergebnis)}</span>
           <div class="result-body"><div class="fremd">${esc(e.frage)}</div>${inhalt}</div>
           ${speakBtn(e.fremd)}
         </li>`;
@@ -242,7 +243,7 @@ export async function renderPractice(app, unitId) {
       ${kikoSays(lob, { stimmung, outfit: sprache.outfit })}
       <ul class="list" id="results">${rows}</ul>
       <div class="row">
-        <button class="btn" id="again">🔁 Nochmal üben</button>
+        <button class="btn" id="again">${icon('nochmal')} Nochmal üben</button>
         <a class="btn btn-secondary" href="#/lektion/${unitId}">Zur Lektion</a>
       </div>`;
     wireSpeak();
