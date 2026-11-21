@@ -86,6 +86,17 @@ export function evaluate(questions, answers) {
   });
 }
 
+// Combo = wie viele Antworten zuletzt hintereinander richtig waren (für den „3er-Combo!“-Sticker).
+// 'fast' unterbricht die Serie nicht, zählt aber auch nicht mit; 'falsch' beendet sie.
+export function combo(questions, answers) {
+  let serie = 0;
+  for (const e of evaluate(questions.slice(0, answers.length), answers)) {
+    if (e.ergebnis === 'richtig') serie += 1;
+    else if (e.ergebnis === 'falsch') serie = 0;
+  }
+  return serie;
+}
+
 // Nur 'falsch' ist ein Fehler, 'fast' nicht.
 export function countErrors(ergebnisse) {
   return ergebnisse.filter((e) => e.ergebnis === 'falsch').length;

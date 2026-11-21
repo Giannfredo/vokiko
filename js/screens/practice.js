@@ -1,6 +1,6 @@
 import { books, units, vocab, sessions, answers as answerDb, newId } from '../db.js';
 import { esc, SPRACHEN, DEUTSCH_CHIP } from '../utils.js';
-import { buildQuestions, evaluate, countErrors, stars, updateStatus } from '../quiz.js';
+import { buildQuestions, evaluate, countErrors, stars, updateStatus, combo } from '../quiz.js';
 import { previousSession, compareText, problemWords, isBestleistung } from '../history.js';
 import { canSpeak, speak } from '../speech.js';
 import { kikoSays } from '../ui/kiko.js';
@@ -106,6 +106,12 @@ export async function renderPractice(app, unitId) {
     const next = (antwort) => askQuestion(questions, [...answers, antwort]);
 
     const zeigtFremd = q.modus !== 'de-fremd'; // bei DE → Fremd kein Anhören-Knopf, sonst wäre die Lösung verraten
+    // Combo-Sticker ab 3 richtigen in Folge; er ploppt nur auf, wenn die Zahl gerade gestiegen ist
+    const serie = combo(questions, answers);
+    const neu = serie > combo(questions, answers.slice(0, -1));
+    const comboSticker = serie >= 3
+      ? `<div class="combo ${neu ? 'neu' : ''}" role="status">${icon('blitz')} ${serie}er-Combo!</div>` : '';
+
     const hinweis = q.modus === 'de-fremd' ? `Wie heißt das auf ${sprache.name}?` : 'Was heißt das auf Deutsch?';
 
     const antwortTeil = q.modus === 'auswahl'
@@ -127,7 +133,10 @@ export async function renderPractice(app, unitId) {
         <span>Wort ${i + 1} von ${questions.length}</span>
         <a class="back" href="#/lektion/${unitId}">${icon('x')} Abbrechen</a>
       </div>
-      <div class="progress"><div style="width:${(i / questions.length) * 100}%"></div></div>
+      <div class="quiz-fortschritt">
+        <div class="progress"><div style="width:${(i / questions.length) * 100}%"></div></div>
+        ${comboSticker}
+      </div>
       <div class="quiz-word">${esc(q.frage)} ${zeigtFremd ? speakBtn(q.fremd) : ''}</div>
       <p class="quiz-hint">${hinweis}</p>
       ${antwortTeil}`;

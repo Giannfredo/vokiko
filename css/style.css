@@ -632,3 +632,30 @@ h1 .ic, h2 .ic { color: var(--braun); }
   from { transform: translate(-50%, -50%) rotate(0deg); }
   to   { transform: translate(-50%, -50%) rotate(360deg); }
 }
+
+/* ---------- Combo-Sticker beim Üben ---------- */
+/* Schwebt rechts unter dem Fortschrittsbalken über dem Inhalt, damit nichts verrutscht */
+.quiz-fortschritt { position: relative; }
+.combo {
+  position: absolute;
+  right: 4px;
+  top: calc(100% + 10px);
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: var(--kante) solid var(--tusche);
+  border-radius: 12px;
+  background: var(--gelb);
+  color: var(--text-auf-farbe);
+  font-family: var(--schrift-titel);
+  font-size: 16px;
+  box-shadow: 3px 3px 0 var(--tusche);
+  transform: rotate(-4deg);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .combo.neu { animation: combo-plopp .45s cubic-bezier(.3, 1.7, .5, 1); }
+}
+@keyframes combo-plopp { from { transform: rotate(-4deg) scale(0); } }
+.quiz-fortschritt + .quiz-word { margin-top: 60px; } /* Platz für den Combo-Sticker */

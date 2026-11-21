@@ -43,6 +43,7 @@ const ICONS = {
   fast: `${kreis('gelb')}<path class="s dick" d="M7 13c1.7-2.2 3.3-2.2 5 0s3.3 2.2 5 0"/>`,
   falsch: `${kreis('pink')}<path class="s dick" d="M9 9l6 6M15 9l-6 6"/>`,
   warnung: '<path class="f gelb" d="M12 3.5l9.5 16.5h-19z"/><path class="s dick" d="M12 10v4M12 17.3v.1"/>',
+  blitz: '<path class="f pink" d="M13.5 2L4 14h7l-1.5 8L19 10h-7z"/>',
   funkel: '<path class="f gelb" d="M12 2Q13.5 10.5 22 12Q13.5 13.5 12 22Q10.5 13.5 2 12Q10.5 10.5 12 2z"/>',
   pfote: '<ellipse class="f pink" cx="12" cy="16" rx="4.8" ry="4"/><circle class="f pink" cx="5.5" cy="10.5" r="2.1"/><circle class="f pink" cx="9.5" cy="6.2" r="2.1"/><circle class="f pink" cx="14.5" cy="6.2" r="2.1"/><circle class="f pink" cx="18.5" cy="10.5" r="2.1"/>',
 
