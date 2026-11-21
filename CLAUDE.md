@@ -69,5 +69,5 @@ Problemwort = `fehlerGesamt > 0` und nicht `sicher`. Vergleich „letztes Mal“
 - [x] 6 Foto-Import mit Tesseract.js + Bereiche markieren + Prüfansicht (läuft; Erkennungsqualität wird noch verbessert)
 - [x] 6b Teilen: Prototyp auf GitHub Pages (https://giannfredo.github.io/vokiko/), läuft auch außerhalb des WLANs
 - [x] 7 Design: Kiko-Grafik (SVG, Stimmungen, Sprach-Outfits, wedelnder Schwanz), Sterne, Konfetti bei Bestleistung, dunkles Thema
-- [ ] 8 PWA (offline, Homescreen)
+- [x] 8 PWA (offline, Homescreen)
 - [ ] 9 Capacitor → iPhone/Android
